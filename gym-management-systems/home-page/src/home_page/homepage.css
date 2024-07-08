@@ -1,0 +1,554 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ensure the container takes the full viewport height */
+}
+
+.image {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  left: 0;
+  top: 73px;
+  max-width: 16000px;
+  max-height: 620px;
+}
+
+.text-container {
+  position: absolute;
+  width: 30vw; /* Adjust width based on viewport width */
+  height: auto; /* Let the height adjust automatically */
+  left: 10vw; /* Adjust left based on viewport width */
+  top: 30vh; /* Adjust top based on viewport height */
+  font-family: 'Poetsen One', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 3vw; /* Adjust font size based on viewport width */
+  line-height: 1.2; /* Adjust line-height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  text-align: center; /* Ensure text is centered within the container */
+}
+
+
+.text-container .yellow-text {
+  color: yellow; /* Apply yellow color to the specific text */
+  margin-top: 1vh;
+}
+
+.logo-client {
+  position: absolute;
+  width: 272px;
+  height: 104px;
+  left: 0px; /* Move the logo to the left side */
+  top: -17px;
+  display: flex;
+  align-items: center;
+  gap: 3px; /* Adjust the gap between the image and text if needed */
+}
+
+.logo-image {
+  width: 4vw; /* Use viewport width for responsiveness */
+  max-width: 60px; /* Set a max-width */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Ensure the image fits within the specified dimensions */
+}
+
+.bold-text {
+  font-weight: bold;
+  font-family: 'Poetsen One', sans-serif;
+  letter-spacing: 0.05em;
+  color:rgb(27, 43, 43);
+}
+
+.rectangle67 {
+  position: absolute;
+  width: 100%; /* Set width to 100% to match the .image width */
+  height: 22.97vh; /* Adjust height based on viewport height for responsiveness */
+  left: 0; /* Align left with the container */
+  top: calc(190px + 38.14vh); /* Adjust top to align with the bottom of the .image */
+  background: linear-gradient(180deg, rgba(26, 19, 99, 0) 0%, #1A1363 100%);
+}
+
+.register {
+  display: flex;
+  justify-content: center; /* Center the text horizontally */
+  align-items: center; /* Center the text vertically */
+  padding: 10px 10px; /* Adjust padding for a smaller box */
+  position: absolute;
+  width: 120px; /* Adjust width */
+  height: 40px; /* Adjust height */
+  left: 1450px;
+  top: 16px;
+  background: #fdee21;
+  border-radius: 50px;
+  font-weight: bold; /* Ensure text is bold */
+  font-family: 'Poetsen One', sans-serif; /* Ensure consistent font */
+  border: none; /* Remove default button border */
+  cursor: pointer; /* Change cursor to pointer */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.register:hover {
+  background: #e0c700; /* Change background color on hover */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.about-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 10px;
+
+  position: absolute;
+  width: 50px;
+  height: 64px;
+  left: 1350px;
+  top: 6px;
+
+  border-radius: 10px;
+}
+
+.membership-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 10px;
+
+  position: absolute;
+  width: 151px;
+  height: 64px;
+  left: 1200px;
+  top: 6px;
+
+  border-radius: 10px;
+}
+
+.rectangle68 {
+  position: absolute;
+  width: 1600px;
+  height: 729px;
+  left: 0px;
+  top: 700px;
+
+  background: #1A1363;
+}
+
+/* About STAMINA GYM FOR MAN & WOMAN */
+.about-text {
+  position: absolute;
+  width: 740px;
+  height: 85px;
+  left: 434px;
+  top: 752px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 36px;
+  text-align: center;
+  letter-spacing: 0.1em;
+
+  color: #FFFFFF;
+}
+
+
+
+/* Add this CSS for the new image */
+.muscles-image {
+  position: absolute;
+  width: 1102px;
+  height: 1558px;
+  left: -10px;
+  top: 337px;
+  background-size: cover;
+}
+
+/* CSS for Rectangle 71 */
+.rectangle71 {
+  position: absolute;
+  width: 381px;
+  height: 573px;
+  left: 1210px;
+  top: 856px;
+  z-index: 0; /* Ensure the image is behind other content */
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+  url('../Images/Rectangle71.png');
+}
+
+/* Stamina Gym Fitness Center provides proper training and conditioning for members who want to improve and transform their body with Program depend on the body composition. */
+.fitness-text {
+  position: absolute;
+  width: 644px;
+  height: 97px;
+  left: 600px;
+  top: 872px;
+  z-index: 1; /* Ensure the image is behind other content */
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 30px;
+  letter-spacing: 0.05em;
+
+  color: #FFFF7D;
+}
+
+/* What we Offer*/
+
+.offer {
+  position: absolute;
+  width: 658px;
+  height: 43px;
+  left: 750px;
+  top: 1033px;
+
+  font-family: 'Actor';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 43px;
+
+  color: #FFFFFF;
+
+}
+
+
+/* Pills gradient background */
+.rectangle72 {
+  position: absolute;
+  width: 381px;
+  height: 577px;
+  left: 1059px;
+  top: 850px;
+  z-index: 0; /* Ensure it's behind other content */
+  background: linear-gradient(95.61deg, #1A1363 3.95%, rgba(26, 19, 99, 0) 114.71%);
+}
+
+/* CSS for Group 31 */
+.group-31 {
+  position: absolute;
+  width: 211px;
+  height: 211px;
+  left: 1035px;
+  top: 1097px;
+}
+
+/* 1 on 1 trainer */
+
+.rectangle57 {
+
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 211px;
+  height: 211px;
+  left: 752px;
+  top: 1097px;
+}
+
+/* 24/7 chat */
+
+.rectangle571 {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 211px;
+  height: 211px;
+  left: 452px;
+  top: 1097px;
+
+
+}
+
+/* Trainer part */
+.rectangle79 {
+  position: absolute;
+  width: 1600px;
+  height: 150%;
+  left: -2px;
+  top: 1429px;
+  background: #ECE9E9;
+}
+
+
+/* JOINT OUR MEMBERSHIP */
+
+.membership {
+
+  position: absolute;
+  width: 495px;
+  height: 48px;
+  left: 705px;
+  top: 1450px;
+
+  font-family:'Actor';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  text-align: center;
+  letter-spacing: 0.1em;
+
+  color: #2B2B2B;
+}
+
+/* Button for TRAINER/COACHES */
+.button-container {
+  position: absolute;
+  width: 100px;
+  height: 64px;
+  left: 1050px; /* Adjust left position */
+  top: 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 10px;
+  border-radius: 10px;
+}
+
+.button-container a {
+  color: #5B21B6; /* Violet color */
+  text-decoration: underline; /* Remove underline */
+}
+
+/* visit button */
+.visit-container {
+  position: absolute;
+  width: 50px;
+  height: 64px;
+  left: 970px; /* Adjust left position */
+  top: 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 10px;
+  border-radius: 10px;
+}
+
+.visit-container a {
+  color: #5B21B6; /* Violet color */
+  text-decoration: underline; /* Remove underline */
+}
+
+/* CUSTOMER button */
+.customer-container {
+  position: absolute;
+  width: 60px;
+  height: 64px;
+  left: 850px; /* Adjust left position */
+  top: 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 10px;
+  border-radius: 10px;
+}
+
+.customer-container a {
+  color: #5B21B6; /* Violet color */
+  text-decoration: underline; /* Remove underline */
+}
+
+
+/* COACH */ 
+
+.coach {
+  position: relative;
+  width: 198px;
+  height: 48px;
+  left: 700px;
+  top: 2000px;
+
+  font-family: 'Actor';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-decoration-line: underline;
+
+  color: #FFFFFF;
+}
+
+/* rectangle 52 */
+.rectangle52 {
+  position: absolute;
+  width: 1600px;
+  height: 1302px;
+  left: 0px;
+  top: 2600px;
+
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
+  url('../Images/Rectangle52.png');
+
+
+}
+
+/* VISIT OUR GYM */
+
+.visitgym {
+  position: absolute;
+  width: 400px;
+  height: 48px;
+  left: 600px;
+  top: 2650px;
+
+  font-family: 'Actor';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: 0.1em;
+
+  color: #1A1363;
+
+
+}
+
+/* GymBLackbox */
+
+.gymbox {
+  position: absolute;
+  width: 778px;
+  height: 308px;
+  left: 460px;
+  top: 2700px;
+
+}
+
+/* Address, Email, Contact Number */
+
+.address-container {
+  position: absolute;
+  left: 595px;
+  top: 2750px;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+  letter-spacing: 0.05em;
+}
+
+.address-container .w-full {
+  text-align: left; /* Ensure text aligns to the left */
+}
+
+.address-container .text-yellow-200 {
+  color: #FDEE21; /* Yellow color */
+}
+
+.address-container .text-stone-50,
+.address-container .text-white {
+  color: #FFFFFF; /* White color */
+}
+
+.address-container .mt-6,
+.address-container .mt-5 {
+  color: #FFFFFF; /* White color for the content */
+}
+
+/* GymLogo */
+.gymlogo {
+  position: absolute;
+  width: 420px;
+  height: 560px;
+  left: 162px;
+  top: 2551px;  
+}
+
+/* customer box */
+
+.customerbox {
+  position: absolute;
+  width: 1600px;
+  height: 662px;
+  left: -3px;
+  top: 3234px;
+}
+
+
+/* Customer’s Progress */
+.customertxt {
+  position: absolute;
+  width: 345px;
+  height: 48px;
+  left: 600px;
+  top: 3300px;
+
+  font-family: 'Actor';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+
+  color: #DEBA3B;
+}
+
+/* Group 74, customer pictures */
+.customerPics {
+  position: absolute;
+  width: 1312px;
+  height: 440px;
+  left: 100px;
+  top: 3400px;
+
+
+
+}
