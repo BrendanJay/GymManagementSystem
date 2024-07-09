@@ -1,0 +1,192 @@
+.membership-plans {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.membership-plans table {
+  width: 100%;
+  border: 1px solid black; 
+  border-spacing: 0; 
+}
+
+.membership-plans th,
+.membership-plans td {
+  border: 1px solid #ddd; 
+  text-align: center;
+  padding: 10px; 
+}
+
+.membership-plans th {
+  background-color: #f2f2f2;
+  font-size: 18px; 
+}
+
+.membership-plans button {
+  margin: 0 5px; 
+  padding: 8px; 
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.membership-plans button:hover {
+  opacity: 0.8;
+}
+
+.membership-plans .edit-button {
+  background-color: #ff9800; 
+  border-radius: 50%; 
+}
+
+.membership-plans .delete-button {
+  background-color: #f44336; 
+  border-radius: 50%; 
+}
+
+.membership-plans .icon {
+  color: white;
+  font-size: 20px;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  font-size: 24px;
+  padding: 10px;
+  background-color: #f2f2f2;
+  margin-bottom: 10px;
+  border: 1px solid black; 
+  height: 35px; 
+}
+
+.add-new-button {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  cursor: pointer;
+  color: #fff;
+  background-color: #0d47a1; 
+  padding: 8px 20px; 
+  border-radius: 20px; 
+  font-size: 14px; 
+  font-weight: normal; 
+}
+
+.add-new-button:hover {
+  background-color: #1565c0; 
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 14px; 
+  padding: 5px;
+}
+
+.search-icon {
+  font-size: 20px; 
+}
+
+.modal {
+  width: 500px; 
+  background-color: white;
+  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; 
+  font-family: Arial, Helvetica, sans-serif; 
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  font-size: 20px; 
+  font-weight: bold;
+  padding-bottom: 10px; 
+}
+
+.modal-divider {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 15px; 
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-field label {
+  margin-bottom: 5px; 
+  font-weight: bold;
+}
+
+.modal-field input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px; 
+  outline: none;
+  font-size: 14px; 
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin-top: 20px; 
+}
+
+.modal-footer-buttons {
+  display: flex;
+  gap: 10px; 
+}
+
+.save-button {
+  background-color: #4caf50; 
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px; 
+  font-size: 14px; 
+}
+
+.cancel-button {
+  background-color: #f44336; 
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px; 
+  font-size: 14px; 
+}

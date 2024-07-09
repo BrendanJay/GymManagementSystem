@@ -1,0 +1,169 @@
+.members {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.members table {
+  width: 100%;
+  border: 1px solid black; 
+  border-spacing: 0; 
+}
+
+.members th,
+.members td {
+  border: 1px solid #ddd; 
+  text-align: center;
+  padding: 10px; 
+}
+
+.members th {
+  background-color: #f2f2f2;
+  font-size: 18px; 
+}
+
+.members button {
+  margin: 0 5px; 
+  padding: 8px; 
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.members button:hover {
+  opacity: 0.8;
+}
+
+.members .view-button {
+  background-color: #4caf50; 
+  border-radius: 50%; 
+}
+
+.members .delete-button {
+  background-color: #f44336; 
+  border-radius: 50%; 
+}
+
+.members .icon {
+  color: white;
+  font-size: 20px;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  font-size: 24px;
+  padding: 10px;
+  background-color: #f2f2f2;
+  margin-bottom: 10px;
+  border: 1px solid black; 
+  height: 35px; 
+}
+
+.add-new-button {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-icon {
+  font-size: 24px;
+}
+
+.search-input {
+  padding: 8px; 
+  border-radius: 20px; 
+  border: 1px solid #ddd; 
+  font-size: 14px; 
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 600px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  max-height: 90vh; 
+  overflow-y: auto;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.modal-divider {
+  height: 2px;
+  background-color: #ccc;
+  margin: 10px 0;
+}
+
+.modal-content {
+  margin-bottom: 20px;
+}
+
+.modal-field-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.modal-field {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.modal-field:last-child {
+  margin-right: 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-footer-buttons button {
+  margin-left: 10px;
+}
+
+.mini-table {
+  width: 100%;
+  margin-bottom: 10px;
+  border-collapse: collapse;
+}
+
+.mini-table th, .mini-table td {
+  border: 1px solid #ccc;
+  padding: 5px;
+  text-align: left;
+}
+
+.mini-table th {
+  background-color: #f4f4f4;
+}
+
+.mini-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
