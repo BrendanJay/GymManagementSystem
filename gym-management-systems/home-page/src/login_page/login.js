@@ -1,4 +1,3 @@
-// src/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebaseConfig';
@@ -43,6 +42,7 @@ const Login = () => {
         birthdate: formData.birthdate,
         contactNumber: formData.contactNumber,
         email: formData.email,
+        password: formData.password,
       });
 
       alert("Account created successfully!");
