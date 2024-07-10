@@ -36,7 +36,7 @@ const Login = () => {
           <input type="date" placeholder="Birthdate" />
           <input type="tel" placeholder="Contact Number" />
           <input type="email" placeholder="Enter email" />
-          <input type="password" placeholder="Enter Password" />
+          <input type="text" placeholder="Enter Password" />
           <input type="password" placeholder="Confirm Password" />
           <button type="button" className="submit">CREATE ACCOUNT</button>
         </form>
