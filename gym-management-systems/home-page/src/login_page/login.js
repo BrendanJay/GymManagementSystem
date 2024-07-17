@@ -87,7 +87,7 @@ const Login = () => {
           <input type="date" name="birthdate" placeholder="Birthdate" onChange={handleChange} />
           <input type="tel" name="contactNumber" placeholder="Contact Number" onChange={handleChange} />
           <input type="email" name="email" placeholder="Enter email" onChange={handleChange} />
-          <input type="password" name="password" placeholder="Enter Password" onChange={handleChange} />
+          <input type="text" name="password" placeholder="Enter Password" onChange={handleChange} />
           <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
           <button type="button" className="submit" onClick={handleRegister}>CREATE ACCOUNT</button>
         </form>
