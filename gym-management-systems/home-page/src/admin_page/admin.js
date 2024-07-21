@@ -1,33 +1,18 @@
-import React from 'react'
-import Background from '../admin_page/AdminImages/BackgroundWhite.png';
-import AdminBackground from '../admin_page/AdminImages/AdminBoard.png';
-
+// D:\GMS_Github\GymManagementSystem\gym-management-systems\home-page\src\admin_page\Adminpage.js
+import React from 'react';
+import Sidebar from '../components/Sidebar';
+import Dashboard from '../components/Dashboard';
+import './admin.css';
 
 function Adminpage() {
-    return (
-
-        <div>
-
-        {/*  AdminWhiteBackground   */}
-        <img
-        loading="lazy"
-        src={Background}
-        className="background"
-        alt="background"
-        />
-
-        {/*  AdminBackground    */}
-        <img
-        loading="lazy"
-        src={AdminBackground}
-        className="adminboard"
-        alt="adminbackground"
-        />
-
-        </div>
-    );
-
-
+  return (
+    <div className="admin-page">
+      <Sidebar />
+      <div className="main-content">
+        <Dashboard />
+      </div>
+    </div>
+  );
 }
 
-export default Adminpage
+export default Adminpage;

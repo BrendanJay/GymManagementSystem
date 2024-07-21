@@ -1,0 +1,74 @@
+.dashboard {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .metrics {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .card {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    position: relative; /* Ensure that child elements like .metric-value are positioned correctly */
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    background-color: #e0e0e0;
+  }
+  
+  .card h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+  
+  .card .metric-value {
+    font-size: 24px;
+    margin: 0;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+  }
+  
+  .members-card {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .trainers-card {
+    background-color: #2196f3;
+    color: white;
+  }
+  
+  .plans-card {
+    background-color: #ff9800;
+    color: white;
+  }
+  
+  .sales-section {
+    margin-top: 20px;
+  }
+  
+  .sales-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .sales-graph {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+  }
+  
