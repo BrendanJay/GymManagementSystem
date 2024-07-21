@@ -29,15 +29,15 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="metrics">
-        <div className="card members-card" onClick={() => handleCardClick('/members')}>
+        <div className="card members-card" onClick={() => handleCardClick('/admin/members')}>
           <h3>Total Members</h3>
           <p className="metric-value">{metrics.totalMembers}</p>
         </div>
-        <div className="card plans-card" onClick={() => handleCardClick('/membershipplans')}>
+        <div className="card plans-card" onClick={() => handleCardClick('/admin/membershipplans')}>
           <h3>Total Plans</h3>
           <p className="metric-value">{metrics.totalPlans}</p>
         </div>
-        <div className="card trainers-card" onClick={() => handleCardClick('/trainers')}>
+        <div className="card trainers-card" onClick={() => handleCardClick('/admin/trainers')}>
           <h3>Total Trainers</h3>
           <p className="metric-value">{metrics.totalTrainers}</p>
         </div>

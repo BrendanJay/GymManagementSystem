@@ -12,37 +12,37 @@ const SidebarData = [
   {
     title: "Dashboard",
     icon: <DashboardIcon />,
-    link: "/dashboard"
+    link: "/admin/dashboard"
   },
   {
     title: "Members",
     icon: <GroupIcon />,
-    link: "/members"
+    link: "/admin/members"
   },
   {
     title: "Membership Plans",
     icon: <CardMembershipIcon />,
-    link: "/membershipplans"
+    link: "/admin/membershipplans"
   },
   {
     title: "Trainers",
     icon: <SportsIcon />,
-    link: "/trainers"
+    link: "/admin/trainers"
   },
   {
     title: "Gym Equipments",
     icon: <FitnessCenterIcon />,
-    link: "/equipments"
+    link: "/admin/equipments"
   },
   {
     title: "Products",
     icon: <InventoryIcon />,
-    link: "/products"
+    link: "/admin/products"
   },
   {
     title: "Sales",
     icon: <PointOfSaleIcon />,
-    link: "/sales"
+    link: "/admin/sales"
   }
 ];
 

@@ -1,22 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap');
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poetsen One', sans-serif;
-}
-body {
-  background-attachment: #527ed5;
-  background: linear-gradient(to right,#8a5f5f, #788ccc);
+
+.login-page {
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  height: 100vh;
+  background-attachment: #527ed5;
+  background: linear-gradient(to right, #8a5f5f, #788ccc);
   animation: animate 16s ease-in-out infinite;
   background-size: cover;
+  font-family: 'Poetsen One', sans-serif; /* Apply font-family here */
 }
-.container {
+
+@keyframes animate {
+  0%, 100% {
+    background-image: url('image1.jpg');
+  }
+  25% {
+    background-image: url('image2.jpg');
+  }
+  50% {
+    background-image: url('image3.jpg');
+  }
+  75% {
+    background-image: url('image4.jpg');
+  }
+}
+
+.login-page .container {
   background-color: #ffffff;
   border-radius: 30px;
   box-shadow: 0 5px 15px rgba(19, 18, 18, 0.35);
@@ -26,24 +37,29 @@ body {
   max-width: 200%;
   min-height: 600px;
 }
-.container p {
+
+.login-page .container p {
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.3px;
   margin: 20px 0;
 }
-.container span {
+
+.login-page .container span {
   font-size: 12px;
 }
-.container a {
+
+.login-page .container a {
   color: #0b0b0b;
   font-size: 13px;
   text-decoration: none;
   margin: 15px 0 10px;
 }
-.container button {
+
+.login-page .container button {
   background-color: #0d0425;
   color: #ffffff;
+  font-family: 'Poetsen One', sans-serif; /* Apply font-family here */
   font-size: 12px;
   padding: 10px 45px;
   border: 1px solid transparent;
@@ -54,11 +70,13 @@ body {
   margin-top: 35px;
   cursor: pointer;
 }
-.container button.hidden {
+
+.login-page .container button.hidden {
   background-color: transparent;
   border-color: #faf7f7;
 }
-.container form {
+
+.login-page .container form {
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -67,9 +85,11 @@ body {
   padding: 0 40px;
   height: 100%;
 }
-.container input {
+
+.login-page .container input {
   background-color: #d1c0c0;
   border: none;
+  font-family: 'Poetsen One', sans-serif; /* Apply font-family here */
   margin: 8px 0;
   padding: 10px 15px;
   font-size: 13px;
@@ -77,32 +97,38 @@ body {
   width: 300px;
   outline: none;
 }
-.form-container {
+
+.login-page .form-container {
   position: absolute;
   top: 0;
   height: 100%;
   transition: all 0.6s ease-in-out;
 }
-.log-in {
+
+.login-page .log-in {
   left: 0;
   width: 50%;
   z-index: 2;
 }
-.container.active .log-in {
+
+.login-page .container.active .log-in {
   transform: translateX(100%);
 }
-.sign-up {
+
+.login-page .sign-up {
   left: 0;
   width: 50%;
   opacity: 0;
   z-index: 1;
 }
-.container.active .sign-up {
+
+.login-page .container.active .sign-up {
   transform: translateX(100%);
   opacity: 1;
   z-index: 5;
   animation: move 0.6s;
 }
+
 @keyframes move {
   0%, 49.99% {
     opacity: 0;
@@ -113,10 +139,12 @@ body {
     z-index: 5;
   }
 }
-.social-icons {
+
+.login-page .social-icons {
   margin: 20px 0;
 }
-.social-icons a {
+
+.login-page .social-icons a {
   border: 1px solid #bcadad;
   border-radius: 60%;
   display: inline-flex;
@@ -127,7 +155,8 @@ body {
   height: 40px;
   text-align: justify;
 }
-.toggle-container {
+
+.login-page .toggle-container {
   position: absolute;
   top: 0;
   left: 50%;
@@ -138,11 +167,13 @@ body {
   border-radius: 300px 0 0 150px;
   z-index: 1000;
 }
-.container.active .toggle-container {
+
+.login-page .container.active .toggle-container {
   transform: translateX(-100%);
   border-radius: 0 300px 150px 0;
 }
-.toggle {
+
+.login-page .toggle {
   background-color: #785a28;
   height: 100%;
   background: linear-gradient(to right, #131b49, #512da8);
@@ -154,15 +185,18 @@ body {
   transform: translateX(0);
   transition: all 0.6s ease-in-out;
 }
-.container.active .toggle {
+
+.login-page .container.active .toggle {
   transform: translateX(50%);
 }
-.wrapp {
+
+.login-page .wrapp {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.nav {
+
+.login-page .nav {
   position: fixed;
   top: 0;
   display: flex;
@@ -170,23 +204,28 @@ body {
   width: 100%;
   height: 100px;
 }
-.nav-menu ul {
+
+.login-page .nav-menu ul {
   display: flex;
 }
-.nav-menu ul li {
+
+.login-page .nav-menu ul li {
   list-style-type: none;
 }
-.nav-menu ul li .link {
+
+.login-page .nav-menu ul li .link {
   text-decoration: none;
   font-weight: 500;
   color: white;
   padding-bottom: 15px;
   margin: 0 200px;
 }
-.link:hover, .active {
+
+.login-page .link:hover, .login-page .active {
   border-bottom: 2px solid #fff;
 }
-.toggle-panel {
+
+.login-page .toggle-panel {
   position: absolute;
   width: 50%;
   height: 100%;
@@ -200,30 +239,20 @@ body {
   transform: translateX(0);
   transition: all 0.6s ease-in-out;
 }
-.toggle-left {
+
+.login-page .toggle-left {
   transform: translateX(-200%);
 }
-.container.active .toggle-left {
+
+.login-page .container.active .toggle-left {
   transform: translateX(0);
 }
-.toggle-right {
+
+.login-page .toggle-right {
   right: 0;
   transform: translateX(0);
 }
-.container.active .toggle-right {
+
+.login-page .container.active .toggle-right {
   transform: translateX(200%);
-}
-@keyframes animate {
-    0%, 100% {
-        background-image: url(image1.jpg);
-    }
-    25% {
-        background-image: url(image2.jpg);
-    }
-    50% {
-        background-image: url(image3.jpg);
-    }
-    75% {
-        background-image: url(image4.jpg);
-    }
 }
