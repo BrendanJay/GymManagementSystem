@@ -80,6 +80,7 @@ const Login = () => {
       <div className="form-container sign-up">
         <form>
           <h1>HELLO THERE!</h1>
+
           <input type="text" name="lastName" placeholder="Last Name" onChange={handleChange} />
           <input type="text" name="firstName" placeholder="First Name" onChange={handleChange} />
           <input type="number" name="age" placeholder="Age" onChange={handleChange} />
@@ -90,6 +91,7 @@ const Login = () => {
           <input type="text" name="password" placeholder="Enter Password" onChange={handleChange} />
           <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
           <button type="button" className="submit" onClick={handleRegister}>CREATE ACCOUNT</button>
+
         </form>
       </div>
       <div className="form-container log-in">
