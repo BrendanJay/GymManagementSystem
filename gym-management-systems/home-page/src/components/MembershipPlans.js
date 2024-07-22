@@ -1,61 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./MembershipPlans.css";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SearchIcon from '@mui/icons-material/Search';
+import { collection, getDocs, setDoc, deleteDoc, doc, query, where } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 const MembershipPlans = () => {
-  const initialPlanState = {
+  const [plans, setPlans] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newPlan, setNewPlan] = useState({
     planName: "",
     description: "",
     duration: "",
     price: "",
-  };
-
-  const [plans, setPlans] = useState([
-    {
-      id: 1,
-      planName: "Premium",
-      description: "Access to all facilities",
-      duration: "12 months",
-      price: "$1200",
-    },
-    {
-      id: 2,
-      planName: "Standard",
-      description: "Basic gym access",
-      duration: "6 months",
-      price: "$600",
-    },
-    {
-      id: 3,
-      planName: "Basic",
-      description: "Limited access to facilities",
-      duration: "3 months",
-      price: "$300",
-    },
-    {
-      id: 4,
-      planName: "Student",
-      description: "Discounted rate for students",
-      duration: "12 months",
-      price: "$800",
-    },
-    {
-      id: 5,
-      planName: "Senior",
-      description: "Discounted rate for seniors",
-      duration: "12 months",
-      price: "$900",
-    },
-  ]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newPlan, setNewPlan] = useState(initialPlanState);
+  });
   const [isEditMode, setIsEditMode] = useState(false);
   const [editPlanId, setEditPlanId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    fetchPlans();
+  }, [searchTerm]);
+
+  const fetchPlans = async () => {
+    const plansRef = collection(db, 'membershipPlans');
+    const q = query(plansRef, 
+      where('planName', '>=', searchTerm),
+      where('planName', '<=', searchTerm + '\uf8ff')
+    );
+    const snapshot = await getDocs(q);
+    const plansArray = snapshot.docs.map(doc => ({ id: parseInt(doc.id), ...doc.data() }));
+    setPlans(plansArray);
+  };
+
+  const getNextId = async () => {
+    const plansRef = collection(db, 'membershipPlans');
+    const snapshot = await getDocs(plansRef);
+    const ids = snapshot.docs.map(doc => parseInt(doc.id)).filter(id => !isNaN(id));
+    return ids.length > 0 ? Math.max(...ids) + 1 : 1;
+  };
 
   const handleEdit = (plan) => {
     setIsEditMode(true);
@@ -64,25 +50,38 @@ const MembershipPlans = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    const updatedPlans = plans.filter(plan => plan.id !== id);
-    setPlans(updatedPlans);
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'membershipPlans', id.toString()));
+      setPlans(plans.filter(plan => plan.id !== id));
+    } catch (error) {
+      console.error("Error deleting plan: ", error);
+    }
   };
 
   const handleAddNew = () => {
     setIsEditMode(false);
-    setNewPlan(initialPlanState);
+    setNewPlan({
+      planName: "",
+      description: "",
+      duration: "",
+      price: "",
+    });
     setIsModalOpen(true);
   };
 
   const handleSearch = (event) => {
-    const searchTerm = event.target.value;
-    console.log(`Searching for: ${searchTerm}`);
+    setSearchTerm(event.target.value.toLowerCase());
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setNewPlan(initialPlanState);
+    setNewPlan({
+      planName: "",
+      description: "",
+      duration: "",
+      price: "",
+    });
   };
 
   const handleInputChange = (e) => {
@@ -90,14 +89,14 @@ const MembershipPlans = () => {
     setNewPlan({ ...newPlan, [name]: value });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (isEditMode) {
-      const updatedPlans = plans.map(plan => 
-        plan.id === editPlanId ? { ...newPlan, id: editPlanId } : plan
-      );
-      setPlans(updatedPlans);
+      await setDoc(doc(db, 'membershipPlans', editPlanId.toString()), newPlan);
+      setPlans(plans.map(plan => plan.id === editPlanId ? { ...newPlan, id: editPlanId } : plan));
     } else {
-      setPlans([...plans, { ...newPlan, id: plans.length + 1 }]);
+      const nextId = await getNextId();
+      await setDoc(doc(db, 'membershipPlans', nextId.toString()), newPlan);
+      setPlans([...plans, { ...newPlan, id: nextId }]);
     }
     handleCloseModal();
   };

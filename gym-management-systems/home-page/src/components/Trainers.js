@@ -1,44 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Trainers.css";
 import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { collection, setDoc, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 const Trainers = () => {
   const [trainersData, setTrainersData] = useState([
-    { 
-      id: 1, 
-      fullName: "John Doe", 
-      gender: "Male", 
-      age: 30, 
-      email: "john.doe@example.com", 
-      contactNumber: "123-456-7890",
-      address: "123 Street, City",
-      specialty: "Weightlifting",
-      ratePerSession: 50,
-      memberHistory: [
-        { id: 1, member: "Member A", sessions: 10, status: "Active" },
-        { id: 2, member: "Member B", sessions: 5, status: "Inactive" },
-      ]
-    },
-    { 
-      id: 2, 
-      fullName: "Jane Smith", 
-      gender: "Female", 
-      age: 28, 
-      email: "jane.smith@example.com", 
-      contactNumber: "987-654-3210",
-      address: "456 Road, Town",
-      specialty: "Yoga",
-      ratePerSession: 40,
-      memberHistory: [
-        { id: 1, member: "Member C", sessions: 8, status: "Active" },
-      ]
-    },
+    
   ]);
 
+  const getNextId = async () => {
+    const trainersRef = collection(db, 'trainers');
+    const snapshot = await getDocs(trainersRef);
+    const ids = snapshot.docs.map(doc => parseInt(doc.id)).filter(id => !isNaN(id));
+    return ids.length > 0 ? Math.max(...ids) + 1 : 1;
+  };
+  
+  const [searchTerm, setSearchTerm] = useState("");
   const [viewTrainer, setViewTrainer] = useState(null);
   const [addTrainerModal, setAddTrainerModal] = useState(false);
   const [newTrainer, setNewTrainer] = useState({
@@ -62,24 +45,35 @@ const Trainers = () => {
     setViewTrainer(null);
   };
 
-  const handleSearch = (event) => {
-    const searchTerm = event.target.value;
-    console.log(`Searching for: ${searchTerm}`);
-    // Implement search functionality here
-  };
-
   const handleAddTrainer = () => {
     setAddTrainerModal(true);
   };
 
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const handleEdit = (trainer) => {
+    setNewTrainer(trainer);
+    setIsEditMode(true);
+    setAddTrainerModal(true);
+  };
+  
   const handleCloseAddTrainerModal = () => {
     setAddTrainerModal(false);
   };
 
-  const handleSaveTrainer = () => {
-    const id = trainersData.length + 1;
-    const newTrainerWithId = { id, ...newTrainer };
-    setTrainersData([...trainersData, newTrainerWithId]);
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
+  };
+
+  const handleSaveTrainer = async () => {
+    if (isEditMode) {
+      await setDoc(doc(db, 'trainers', newTrainer.id.toString()), newTrainer);
+      setTrainersData(trainersData.map(trainer => trainer.id === newTrainer.id ? newTrainer : trainer));
+    } else {
+      const nextId = await getNextId();
+      await setDoc(doc(db, 'trainers', nextId.toString()), newTrainer);
+      setTrainersData([...trainersData, { id: nextId, ...newTrainer }]);
+    }
     setNewTrainer({
       fullName: "",
       gender: "",
@@ -91,13 +85,31 @@ const Trainers = () => {
       ratePerSession: 0,
       memberHistory: [],
     });
+    setIsEditMode(false);
     setAddTrainerModal(false);
   };
+  
+  
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      const trainersRef = collection(db, 'trainers');
+      const q = query(trainersRef, 
+        where('fullName', '>=', searchTerm),
+        where('fullName', '<=', searchTerm + '\uf8ff')
+      );
+      const snapshot = await getDocs(q);
+      const trainersArray = snapshot.docs.map(doc => ({ id: parseInt(doc.id), ...doc.data() }));
+      setTrainersData(trainersArray);
+    };
+  
+    fetchTrainers();
+  }, [searchTerm]);
 
-  const handleDeleteTrainer = (id) => {
-    const updatedTrainers = trainersData.filter(trainer => trainer.id !== id);
-    setTrainersData(updatedTrainers);
+  const handleDeleteTrainer = async (id) => {
+    await deleteDoc(doc(db, 'trainers', id));
+    setTrainersData(trainersData.filter(trainer => trainer.id !== id));
   };
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -143,6 +155,9 @@ const Trainers = () => {
               <td>
                 <button className="view-button" onClick={() => handleView(trainer.id)}>
                   <PersonIcon className="icon" />
+                </button>
+                <button className="edit-button" onClick={() => handleEdit(trainer)}>
+                  <EditIcon className="icon" />
                 </button>
                 <button className="delete-button" onClick={() => handleDeleteTrainer(trainer.id)}>
                   <DeleteIcon className="icon" />

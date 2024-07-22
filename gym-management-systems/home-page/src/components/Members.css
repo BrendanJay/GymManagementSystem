@@ -90,15 +90,60 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 600px;
+  width: 100%;
+  max-width: 800px;
   background: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  max-height: 90vh; 
+  max-height: 150vh; 
   overflow-y: auto;
 }
+
+.historyplan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.add-historyplan-button {
+  display: flex;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-history-button .icon {
+  margin-right: 5px;
+}
+
+.historyplan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.add-historyplan-button {
+  display: flex;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-historyplan-button .icon {
+  margin-right: 5px;
+}
+
 
 .overlay {
   position: fixed;

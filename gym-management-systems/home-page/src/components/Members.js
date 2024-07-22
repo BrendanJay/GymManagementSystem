@@ -5,86 +5,32 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { db } from '../firebaseConfig';
+import { collection, setDoc, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore';
+
+
+
+
+
 
 const Members = () => {
   const initialMembersData = [
     {
-      id: 1,
-      username: "john_doe",
-      fullName: "John Doe",
-      gender: "Male",
-      age: 25,
-      email: "john.doe@example.com",
-      contactInfo: "123-456-7890",
-      address: "123 Street, City",
-      membershipPlanHistory: [
-        { id: 1, plan: "Plan A", startDate: "2023-01-01", endDate: "2023-02-01", status: "Active" },
-        { id: 2, plan: "Plan B", startDate: "2023-02-01", endDate: "2023-03-01", status: "Inactive" },
-      ],
-      trainerHistory: [
-        { id: 1, trainer: "Trainer A", sessions: 10, status: "Active" },
-        { id: 2, trainer: "Trainer B", sessions: 5, status: "Inactive" },
-      ]
-    },
-    {
-      id: 2,
-      username: "jane_smith",
-      fullName: "Jane Smith",
-      gender: "Female",
-      age: 30,
-      email: "jane.smith@example.com",
-      contactInfo: "987-654-3210",
-      address: "456 Avenue, Town",
-      membershipPlanHistory: [
-        { id: 1, plan: "Plan C", startDate: "2023-03-01", endDate: "2023-04-01", status: "Active" },
-      ],
-      trainerHistory: [
-        { id: 1, trainer: "Trainer C", sessions: 8, status: "Active" },
-      ]
-    },
-    {
-      id: 3,
-      username: "alice_johnson",
-      fullName: "Alice Johnson",
-      gender: "Female",
-      age: 28,
-      email: "alice.johnson@example.com",
-      contactInfo: "555-123-4567",
-      address: "789 Lane, Village",
-      membershipPlanHistory: [
-        { id: 1, plan: "Plan D", startDate: "2023-04-01", endDate: "2023-05-01", status: "Active" },
-      ],
-      trainerHistory: [
-        { id: 1, trainer: "Trainer D", sessions: 12, status: "Active" },
-      ]
-    },
-    {
-      id: 4,
-      username: "michael_brown",
-      fullName: "Michael Brown",
-      gender: "Male",
-      age: 32,
-      email: "michael.brown@example.com",
-      contactInfo: "111-222-3333",
-      address: "567 Road, City",
-      membershipPlanHistory: [],
-      trainerHistory: []
-    },
-    {
-      id: 5,
-      username: "emily_wilson",
-      fullName: "Emily Wilson",
-      gender: "Female",
-      age: 27,
-      email: "emily.wilson@example.com",
-      contactInfo: "333-444-5555",
-      address: "890 Boulevard, Town",
-      membershipPlanHistory: [
-        { id: 1, plan: "Plan E", startDate: "2023-05-01", endDate: "2023-06-01", status: "Active" },
-      ],
-      trainerHistory: []
     }
   ];
+
+  const getNextId = async () => {
+    const membersRef = collection(db, 'members');
+    const snapshot = await getDocs(membersRef);
+    const ids = snapshot.docs.map(doc => {
+      const id = parseInt(doc.id);
+      return isNaN(id) ? 0 : id;
+    });
+    return ids.length > 0 ? Math.max(...ids) + 1 : 1;
+  };
+  
+  
 
   const [membersData, setMembersData] = useState(initialMembersData);
   const [viewMember, setViewMember] = useState(null);
@@ -105,6 +51,18 @@ const Members = () => {
     sessions: 0,
   });
 
+  const [membershipPlanModal, setMembershipPlanModal] = useState(false);
+  const [trainerHistoryModal, setTrainerHistoryModal] = useState(false);
+  const [newMembershipPlan, setNewMembershipPlan] = useState({
+    planName: '',
+    startDate: '',
+    endDate: '',
+  });
+  const [newTrainerHistory, setNewTrainerHistory] = useState({
+    trainerName: '',
+    sessions: 0,
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleView = (id) => {
@@ -121,13 +79,33 @@ const Members = () => {
   };
 
   useEffect(() => {
-    const filteredMembers = initialMembersData.filter((member) =>
-      member.username.toLowerCase().includes(searchTerm) ||
-      member.fullName.toLowerCase().includes(searchTerm) ||
-      member.email.toLowerCase().includes(searchTerm)
-    );
-    setMembersData(filteredMembers);
+    const fetchMembers = async () => {
+      const membersRef = collection(db, 'members');
+      const q = query(membersRef, 
+        where('username', '>=', searchTerm),
+        where('username', '<=', searchTerm + '\uf8ff')
+      );
+      const snapshot = await getDocs(q);
+      const membersArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMembersData(membersArray);
+    };
+  
+    if (searchTerm) {
+      fetchMembers();
+    } else {
+      // Fetch all members if search term is empty
+      const fetchAllMembers = async () => {
+        const membersRef = collection(db, 'members');
+        const snapshot = await getDocs(membersRef);
+        const membersArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setMembersData(membersArray);
+      };
+      fetchAllMembers();
+    }
   }, [searchTerm]);
+  
+  
+  
 
   const handleAddMember = () => {
     setAddMemberModal(true);
@@ -137,10 +115,82 @@ const Members = () => {
     setAddMemberModal(false);
   };
 
-  const handleSaveMember = () => {
-    const id = membersData.length + 1;
-    const newMemberWithId = { id, ...newMember };
+  const handleAddMembershipPlan = () => {
+    setMembershipPlanModal(true);
+  };
+  
+  const handleAddTrainerHistory = () => {
+    setTrainerHistoryModal(true);
+  };
+
+  const handleSaveMembershipPlan = async () => {
+    const updatedMember = {
+      ...viewMember,
+      membershipPlansHistory: [
+        ...viewMember.membershipPlansHistory,
+        {
+          id: viewMember.membershipPlansHistory.length + 1,
+          ...newMembershipPlan,
+          status: 'Active'
+        }
+      ]
+    };
+    await setDoc(doc(db, 'members', viewMember.id.toString()), updatedMember);
+    setViewMember(updatedMember);
+    setMembersData(membersData.map(member => 
+      member.id === viewMember.id ? updatedMember : member
+    ));
+    setMembershipPlanModal(false);
+  };
+  
+  const handleSaveTrainerHistory = async () => {
+    const updatedMember = {
+      ...viewMember,
+      trainerHistory: [
+        ...viewMember.trainerHistory,
+        {
+          id: viewMember.trainerHistory.length + 1,
+          ...newTrainerHistory,
+          status: 'Active'
+        }
+      ]
+    };
+    await setDoc(doc(db, 'members', viewMember.id.toString()), updatedMember);
+    setViewMember(updatedMember);
+    setMembersData(membersData.map(member => 
+      member.id === viewMember.id ? updatedMember : member
+    ));
+    setTrainerHistoryModal(false);
+  };
+  
+  const handleSaveMember = async () => {
+    const membersRef = collection(db, 'members');
+    if (newMember.id) {
+      // Editing existing member
+      await setDoc(doc(membersRef, newMember.id.toString()), newMember);
+      setMembersData(membersData.map(member => member.id === newMember.id ? newMember : member));
+    } else {
+    const nextId = await getNextId();
+    const memberData = {
+      ...newMember,
+      membershipPlansHistory: [{
+        id: 1,
+        planName: newMember.membershipPlan,
+        startDate: newMember.startDate,
+        endDate: newMember.endDate,
+        status: 'Active'
+      }],
+      trainerHistory: [{
+        id: 1,
+        trainerName: newMember.trainer,
+        sessions: newMember.sessions,
+        status: 'Active'
+      }]
+    };
+    await setDoc(doc(membersRef, nextId.toString()), memberData);
+    const newMemberWithId = { id: nextId, ...memberData };
     setMembersData([...membersData, newMemberWithId]);
+    }
     setNewMember({
       username: "",
       fullName: "",
@@ -158,10 +208,98 @@ const Members = () => {
     });
     setAddMemberModal(false);
   };
+  
+  const handleMembershipPlansHistory = async () => {
+    const newPlan = {
+      id: viewMember.membershipPlansHistory.length + 1,
+      planName: "",
+      startDate: "",
+      endDate: "",
+      status: "Active"
+    };
 
-  const handleDeleteMember = (id) => {
-    const updatedMembers = membersData.filter(member => member.id !== id);
-    setMembersData(updatedMembers);
+
+  
+    const updatedMember = {
+      ...viewMember,
+      membershipPlansHistory: [...viewMember.membershipPlansHistory, newPlan]
+    };
+  
+    await setDoc(doc(db, 'members', viewMember.id.toString()), updatedMember);
+    setViewMember(updatedMember);
+    setMembersData(membersData.map(member => 
+      member.id === viewMember.id ? updatedMember : member
+    ));
+  };
+  
+  const handleTrainerHistory = async () => {
+    const newTrainerHistory = {
+      id: viewMember.trainerHistory.length + 1,
+      trainerName: "",
+      sessions: 0,
+      status: "Active"
+    };
+  
+    const updatedMember = {
+      ...viewMember,
+      trainerHistory: [...viewMember.trainerHistory, newTrainerHistory]
+    };
+  
+    await setDoc(doc(db, 'members', viewMember.id.toString()), updatedMember);
+    setViewMember(updatedMember);
+    setMembersData(membersData.map(member => 
+      member.id === viewMember.id ? updatedMember : member
+    ));
+  };
+  
+   
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const membersRef = collection(db, 'members');
+      const snapshot = await getDocs(membersRef);
+      const membersArray = snapshot.docs.map(doc => {
+        const data = doc.data();
+        const currentDate = new Date();
+        
+        if (data.membershipPlansHistory) {
+          data.membershipPlansHistory = data.membershipPlansHistory.map(plan => ({
+            ...plan,
+            status: currentDate >= new Date(plan.startDate) && currentDate <= new Date(plan.endDate) ? 'Active' : 'Inactive'
+          }));
+        } else {
+          data.membershipPlansHistory = [];
+        }
+        
+        if (data.trainerHistory) {
+          data.trainerHistory = data.trainerHistory.map(trainer => ({
+            ...trainer,
+            status: currentDate >= new Date(data.startDate) && currentDate <= new Date(data.endDate) ? 'Active' : 'Inactive'
+          }));
+        } else {
+          data.trainerHistory = [];
+        }
+        
+        return { id: doc.id, ...data };
+      });
+      setMembersData(membersArray);
+    };
+  
+    fetchMembers();
+  }, []);
+   
+
+  const handleDeleteMember = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'members', id.toString()));
+      setMembersData(membersData.filter(member => member.id !== id));
+    } catch (error) {
+      console.error("Error deleting member: ", error);
+    }
+  };
+  
+  const handleEdit = (member) => {
+    setNewMember(member);
+    setAddMemberModal(true);
   };
 
   const handleInputChange = (e) => {
@@ -172,27 +310,41 @@ const Members = () => {
     }));
   };
 
+  const [membershipPlans, setMembershipPlans] = useState([]);
+
+
+  useEffect(() => {
+    const fetchMembershipPlans = async () => {
+      const plansRef = collection(db, 'membershipPlans');
+      const snapshot = await getDocs(plansRef);
+      const plansArray = snapshot.docs.map(doc => ({ id: doc.id, planName: doc.data().planName }));
+      setMembershipPlans(plansArray);
+    };
+  
+    fetchMembershipPlans();
+  }, []);
+
+  const [trainers, setTrainers] = useState([]);
+
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      const trainersRef = collection(db, 'trainers');
+      const snapshot = await getDocs(trainersRef);
+      const trainersArray = snapshot.docs.map(doc => ({ id: doc.id, fullName: doc.data().fullName }));
+      setTrainers(trainersArray);
+    };
+  
+    fetchTrainers();
+  }, []);
+  
   const handleMembershipPlanChange = (e) => {
     const selectedPlan = e.target.value;
-    let duration;
-    switch (selectedPlan) {
-      case "Plan A":
-        duration = "1 month";
-        break;
-      case "Plan B":
-        duration = "2 months";
-        break;
-      case "Plan C":
-        duration = "3 months";
-        break;
-      default:
-        duration = "";
-        break;
-    }
+    const selectedPlanData = membershipPlans.find(plan => plan.planName === selectedPlan);
+    
     setNewMember((prevMember) => ({
       ...prevMember,
       membershipPlan: selectedPlan,
-      duration: duration,
+      duration: selectedPlanData ? selectedPlanData.duration : '',
     }));
   };
 
@@ -236,10 +388,13 @@ const Members = () => {
               <td>{member.gender}</td>
               <td>{member.age}</td>
               <td>{member.email}</td>
-              <td>{member.contactInfo}</td>
+              <td>{member.contactNumber}</td>
               <td>
                 <button className="view-button" onClick={() => handleView(member.id)}>
                   <PersonIcon className="icon" />
+                </button>
+                <button className="edit-button" onClick={() => handleEdit(member)}>
+                  <EditIcon className="icon" />
                 </button>
                 <button className="delete-button" onClick={() => handleDeleteMember(member.id)}>
                   <DeleteIcon className="icon" />
@@ -278,69 +433,141 @@ const Members = () => {
                     <strong>Email:</strong> {viewMember.email}
                   </div>
                   <div>
-                    <strong>Contact Info:</strong> {viewMember.contactInfo}
+                    <strong>Contact Info:</strong> {viewMember.contactNumber}
                   </div>
                   <div>
                     <strong>Address:</strong> {viewMember.address}
                   </div>
                 </div>
-                {viewMember.membershipPlanHistory.length > 0 && (
+                {viewMember && viewMember.membershipPlansHistory && (
                   <div className="membership-history">
-                    <h3>Membership Plan History</h3>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Plan</th>
-                          <th>Start Date</th>
-                          <th>End Date</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {viewMember.membershipPlanHistory.map((plan) => (
-                          <tr key={plan.id}>
-                            <td>{plan.id}</td>
-                            <td>{plan.plan}</td>
-                            <td>{plan.startDate}</td>
-                            <td>{plan.endDate}</td>
-                            <td>{plan.status}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                    <div className="history-header">
+                      <div className="view-member-modal">                    
+                          <h3>Membership Plan History</h3>
+                          <button className="add-historyplan-button" onClick={handleAddMembershipPlan}>
+                          <AddCircleIcon className="icon" /> Add New Plan
+                          </button>
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>ID</th>
+                                <th>Plan Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {viewMember.membershipPlansHistory.map((plan) => (
+                                <tr key={plan.id}>
+                                  <td>{plan.id}</td>
+                                  <td>{plan.planName}</td>
+                                  <td>{plan.startDate}</td>
+                                  <td>{plan.endDate}</td>
+                                  <td>{plan.status}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
                 )}
-                {viewMember.trainerHistory.length > 0 && (
-                  <div className="trainer-history">
-                    <h3>Trainer History</h3>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Trainer</th>
-                          <th>Sessions</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {viewMember.trainerHistory.map((trainer) => (
-                          <tr key={trainer.id}>
-                            <td>{trainer.id}</td>
-                            <td>{trainer.trainer}</td>
-                            <td>{trainer.sessions}</td>
-                            <td>{trainer.status}</td>
+
+                {viewMember && viewMember.trainerHistory && (
+                    <div className="trainer-history">
+                      <div className="historyplan-header">                        
+                            <h3>Trainer History</h3>
+                            <button className="add-historyplan-button" onClick={handleAddTrainerHistory}>
+                              <AddCircleIcon className="icon" /> Add New Trainer
+                            </button>
+                          </div>                      
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Trainer Name</th>
+                            <th>Sessions</th>
+                            <th>Status</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {viewMember.trainerHistory.map((trainer) => (
+                            <tr key={trainer.id}>
+                              <td>{trainer.id}</td>
+                              <td>{trainer.trainerName}</td>
+                              <td>{trainer.sessions}</td>
+                              <td>{trainer.status}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                 )}
               </div>
             </div>
           </div>
         </div>
       )}
+
+        {membershipPlanModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>Add New Membership Plan</h2>
+              <select
+                value={newMembershipPlan.planName}
+                onChange={(e) => setNewMembershipPlan({...newMembershipPlan, planName: e.target.value})}
+              >
+                <option value="">Select Plan</option>
+                {membershipPlans.map((plan) => (
+                  <option key={plan.id} value={plan.planName}>
+                    {plan.planName}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="date"
+                value={newMembershipPlan.startDate}
+                onChange={(e) => setNewMembershipPlan({...newMembershipPlan, startDate: e.target.value})}
+              />
+              <input
+                type="date"
+                value={newMembershipPlan.endDate}
+                onChange={(e) => setNewMembershipPlan({...newMembershipPlan, endDate: e.target.value})}
+              />
+              <button onClick={handleSaveMembershipPlan}>Save</button>
+              <button onClick={() => setMembershipPlanModal(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
+
+        {trainerHistoryModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>Add New Trainer History</h2>
+              <select
+                value={newTrainerHistory.trainerName}
+                onChange={(e) => setNewTrainerHistory({...newTrainerHistory, trainerName: e.target.value})}
+              >
+                <option value="">Select Trainer</option>
+                {trainers.map((trainer) => (
+                  <option key={trainer.id} value={trainer.fullName}>
+                    {trainer.fullName}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="number"
+                placeholder="Sessions"
+                value={newTrainerHistory.sessions}
+                onChange={(e) => setNewTrainerHistory({...newTrainerHistory, sessions: parseInt(e.target.value)})}
+              />
+              <button onClick={handleSaveTrainerHistory}>Save</button>
+              <button onClick={() => setTrainerHistoryModal(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
+
 
       {addMemberModal && (
         <div className="modal-overlay">
@@ -365,7 +592,7 @@ const Members = () => {
                 <div className="modal-field">
                   <label>Full Name:</label>
                   <input
-                    type="text"
+                    type="text"                                        
                     name="fullName"
                     value={newMember.fullName}
                     onChange={handleInputChange}
@@ -387,6 +614,17 @@ const Members = () => {
                   </select>
                 </div>
                 <div className="modal-field">
+                  <label>Age:</label>
+                  <input
+                    type="number"
+                    name="age"
+                    value={newMember.age}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="modal-field-row">
+                <div className="modal-field">
                   <label>Email:</label>
                   <input
                     type="email"
@@ -395,8 +633,6 @@ const Members = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-              </div>
-              <div className="modal-field-row">
                 <div className="modal-field">
                   <label>Contact Number:</label>
                   <input
@@ -406,6 +642,8 @@ const Members = () => {
                     onChange={handleInputChange}
                   />
                 </div>
+              </div>
+              <div className="modal-field-row">
                 <div className="modal-field">
                   <label>Address:</label>
                   <input
@@ -415,8 +653,6 @@ const Members = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-              </div>
-              <div className="modal-field-row">
                 <div className="modal-field">
                   <label>Membership Plan:</label>
                   <select
@@ -425,13 +661,15 @@ const Members = () => {
                     onChange={handleMembershipPlanChange}
                   >
                     <option value="">Select Plan</option>
-                    <option value="Plan A">Plan A</option>
-                    <option value="Plan B">Plan B</option>
-                    <option value="Plan C">Plan C</option>
-                    <option value="Plan D">Plan D</option>
-                    <option value="Plan E">Plan E</option>
+                    {membershipPlans.map((plan) => (
+                      <option key={plan.id} value={plan.planName}>
+                        {plan.planName}
+                      </option>
+                    ))}
                   </select>
                 </div>
+              </div>
+              <div className="modal-field-row">
                 <div className="modal-field">
                   <label>Duration:</label>
                   <input
@@ -441,8 +679,6 @@ const Members = () => {
                     readOnly
                   />
                 </div>
-              </div>
-              <div className="modal-field-row">
                 <div className="modal-field">
                   <label>Start Date:</label>
                   <input
@@ -452,6 +688,8 @@ const Members = () => {
                     onChange={handleInputChange}
                   />
                 </div>
+              </div>
+              <div className="modal-field-row">
                 <div className="modal-field">
                   <label>End Date:</label>
                   <input
@@ -461,8 +699,6 @@ const Members = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-              </div>
-              <div className="modal-field-row">
                 <div className="modal-field">
                   <label>Trainer:</label>
                   <input
@@ -472,6 +708,8 @@ const Members = () => {
                     onChange={handleInputChange}
                   />
                 </div>
+              </div>
+              <div className="modal-field-row">
                 <div className="modal-field">
                   <label>Sessions:</label>
                   <input
@@ -496,7 +734,7 @@ const Members = () => {
           </div>
         </div>
       )}
-    </div>
+    </div>    
   );
 };
 
