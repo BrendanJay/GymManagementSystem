@@ -36,9 +36,24 @@ const Trainers = () => {
     memberHistory: [],
   });
 
-  const handleView = (id) => {
+  const handleView = async (id) => {
     const trainer = trainersData.find(trainer => trainer.id === id);
-    setViewTrainer(trainer);
+    const membersRef = collection(db, 'members');
+    const membersSnapshot = await getDocs(membersRef);
+    const memberHistory = membersSnapshot.docs
+      .filter(doc => doc.data().trainerHistory.some(th => th.trainerName === trainer.fullName))
+      .map(doc => {
+        const memberData = doc.data();
+        const trainerHistory = memberData.trainerHistory.find(th => th.trainerName === trainer.fullName);
+        const currentDate = new Date();
+        const status = currentDate >= new Date(memberData.startDate) && currentDate <= new Date(memberData.endDate) ? 'Active' : 'Inactive';
+        return {
+          member: memberData.fullName,
+          sessions: trainerHistory.sessions,
+          status: status
+        };
+      });
+    setViewTrainer({ ...trainer, memberHistory });
   };
 
   const handleCloseView = () => {
@@ -62,7 +77,7 @@ const Trainers = () => {
   };
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value.toLowerCase());
+    setSearchTerm(event.target.value);
   };
 
   const handleSaveTrainer = async () => {
@@ -216,8 +231,8 @@ const Trainers = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {viewTrainer.memberHistory.map((member) => (
-                        <tr key={member.id}>
+                      {viewTrainer.memberHistory.map((member, index) => (
+                        <tr key={index}>
                           <td>{member.member}</td>
                           <td>{member.sessions}</td>
                           <td>{member.status}</td>

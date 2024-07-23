@@ -15,10 +15,7 @@ import { collection, setDoc, getDocs, deleteDoc, doc, query, where } from 'fireb
 
 
 const Members = () => {
-  const initialMembersData = [
-    {
-    }
-  ];
+  
 
   const getNextId = async () => {
     const membersRef = collection(db, 'members');
@@ -28,11 +25,10 @@ const Members = () => {
       return isNaN(id) ? 0 : id;
     });
     return ids.length > 0 ? Math.max(...ids) + 1 : 1;
-  };
-  
+  }; 
   
 
-  const [membersData, setMembersData] = useState(initialMembersData);
+  const [membersData, setMembersData] = useState([]);
   const [viewMember, setViewMember] = useState(null);
   const [addMemberModal, setAddMemberModal] = useState(false);
   const [newMember, setNewMember] = useState({
@@ -75,7 +71,7 @@ const Members = () => {
   };
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value.toLowerCase());
+    setSearchTerm(event.target.value);
   };
 
   useEffect(() => {
@@ -88,7 +84,8 @@ const Members = () => {
       const snapshot = await getDocs(q);
       const membersArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setMembersData(membersArray);
-    };
+  };
+  
   
     if (searchTerm) {
       fetchMembers();
@@ -103,9 +100,7 @@ const Members = () => {
       fetchAllMembers();
     }
   }, [searchTerm]);
-  
-  
-  
+   
 
   const handleAddMember = () => {
     setAddMemberModal(true);
@@ -208,50 +203,6 @@ const Members = () => {
     });
     setAddMemberModal(false);
   };
-  
-  const handleMembershipPlansHistory = async () => {
-    const newPlan = {
-      id: viewMember.membershipPlansHistory.length + 1,
-      planName: "",
-      startDate: "",
-      endDate: "",
-      status: "Active"
-    };
-
-
-  
-    const updatedMember = {
-      ...viewMember,
-      membershipPlansHistory: [...viewMember.membershipPlansHistory, newPlan]
-    };
-  
-    await setDoc(doc(db, 'members', viewMember.id.toString()), updatedMember);
-    setViewMember(updatedMember);
-    setMembersData(membersData.map(member => 
-      member.id === viewMember.id ? updatedMember : member
-    ));
-  };
-  
-  const handleTrainerHistory = async () => {
-    const newTrainerHistory = {
-      id: viewMember.trainerHistory.length + 1,
-      trainerName: "",
-      sessions: 0,
-      status: "Active"
-    };
-  
-    const updatedMember = {
-      ...viewMember,
-      trainerHistory: [...viewMember.trainerHistory, newTrainerHistory]
-    };
-  
-    await setDoc(doc(db, 'members', viewMember.id.toString()), updatedMember);
-    setViewMember(updatedMember);
-    setMembersData(membersData.map(member => 
-      member.id === viewMember.id ? updatedMember : member
-    ));
-  };
-  
    
   useEffect(() => {
     const fetchMembers = async () => {
@@ -317,7 +268,7 @@ const Members = () => {
     const fetchMembershipPlans = async () => {
       const plansRef = collection(db, 'membershipPlans');
       const snapshot = await getDocs(plansRef);
-      const plansArray = snapshot.docs.map(doc => ({ id: doc.id, planName: doc.data().planName }));
+      const plansArray = snapshot.docs.map(doc => ({ id: doc.id, planName: doc.data().planName, duration: doc.data().duration }));
       setMembershipPlans(plansArray);
     };
   
@@ -334,8 +285,8 @@ const Members = () => {
       setTrainers(trainersArray);
     };
   
-    fetchTrainers();
-  }, []);
+    fetchTrainers();  }, []);
+  
   
   const handleMembershipPlanChange = (e) => {
     const selectedPlan = e.target.value;
@@ -346,7 +297,7 @@ const Members = () => {
       membershipPlan: selectedPlan,
       duration: selectedPlanData ? selectedPlanData.duration : '',
     }));
-  };
+  }; 
 
   return (
     <div className="members">
@@ -700,13 +651,18 @@ const Members = () => {
                   />
                 </div>
                 <div className="modal-field">
-                  <label>Trainer:</label>
-                  <input
-                    type="text"
+                  <select
                     name="trainer"
                     value={newMember.trainer}
                     onChange={handleInputChange}
-                  />
+                  >
+                    <option value="">Select Trainer</option>
+                    {trainers.map((trainer) => (
+                      <option key={trainer.id} value={trainer.fullName}>
+                        {trainer.fullName}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="modal-field-row">

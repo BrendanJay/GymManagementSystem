@@ -21,10 +21,13 @@ const MembershipPlans = () => {
   const [editPlanId, setEditPlanId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    fetchPlans();
-  }, [searchTerm]);
 
+  
+const handleSearch = (event) => {
+  setSearchTerm(event.target.value);
+};
+
+useEffect(() => {
   const fetchPlans = async () => {
     const plansRef = collection(db, 'membershipPlans');
     const q = query(plansRef, 
@@ -35,6 +38,21 @@ const MembershipPlans = () => {
     const plansArray = snapshot.docs.map(doc => ({ id: parseInt(doc.id), ...doc.data() }));
     setPlans(plansArray);
   };
+
+  if (searchTerm) {
+    fetchPlans();
+  } else {
+    // Fetch all plans if search term is empty
+    const fetchAllPlans = async () => {
+      const plansRef = collection(db, 'membershipPlans');
+      const snapshot = await getDocs(plansRef);
+      const plansArray = snapshot.docs.map(doc => ({ id: parseInt(doc.id), ...doc.data() }));
+      setPlans(plansArray);
+    };
+    fetchAllPlans();
+  }
+}, [searchTerm]);
+
 
   const getNextId = async () => {
     const plansRef = collection(db, 'membershipPlans');
@@ -70,9 +88,6 @@ const MembershipPlans = () => {
     setIsModalOpen(true);
   };
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value.toLowerCase());
-  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);

@@ -1,30 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
-  // State for key metrics
   const [metrics, setMetrics] = useState({
     totalMembers: 0,
     totalTrainers: 0,
     totalPlans: 0,
   });
 
-  // Fetch metrics from API (dummy data for now)
   useEffect(() => {
-    // Simulating API calls
-    setMetrics({
-      totalMembers: 150,
-      totalTrainers: 20,
-      totalPlans: 10,
-    });
+    const fetchMetrics = async () => {
+      const membersSnapshot = await getDocs(collection(db, 'members'));
+      const plansSnapshot = await getDocs(collection(db, 'membershipPlans'));
+      const trainersSnapshot = await getDocs(collection(db, 'trainers'));
+  
+      setMetrics({
+        totalMembers: membersSnapshot.size,
+        totalPlans: plansSnapshot.size,
+        totalTrainers: trainersSnapshot.size,
+      });
+    };
+  
+    fetchMetrics();
   }, []);
 
   const handleCardClick = (path) => {
     navigate(path);
-  };
+  };  
 
   return (
     <div className="dashboard">
