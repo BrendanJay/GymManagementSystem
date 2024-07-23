@@ -45,11 +45,11 @@ function Homepage() {
       <div className="rectangle67"></div> {/* Added div */}
 
       <div className="register">
-        <NavLink to="login">Join Now!</NavLink> {/* Updated div to include Link */}
+        <NavLink to="login" style={{ textDecoration: 'none' }}>Join Now!</NavLink> {/* Updated div to include Link */}
       </div>
 
       <div className="about-container">
-        <a href="#about-section" className="text-base font-bold max-w-[111px] text-violet-950">
+        <a href="#about-section" className="text-base font-bold max-w-[111px] text-violet-950" style={{ textDecoration: 'none' }}>
           ABOUT
         </a>
       </div>
@@ -58,7 +58,7 @@ function Homepage() {
 
     
       <div className="membership-container">
-        <a href="#membership-section" className="text-base font-bold max-w-[111px] text-violet-950">
+        <a href="#membership-section" className="text-base font-bold max-w-[111px] text-violet-950" style={{ textDecoration: 'none' }}>
           MEMBERSHIP
         </a>
       </div> 
@@ -67,7 +67,7 @@ function Homepage() {
 
         
       <div className="button-container">
-        <a href="#coaches-section" className="text-base font-bold max-w-[109px] text-violet-950">
+        <a href="#coaches-section" className="text-base font-bold max-w-[109px] text-violet-950" style={{ textDecoration: 'none' }}>
           COACH/TRAINERS
         </a>
       </div>
@@ -81,7 +81,7 @@ function Homepage() {
 
        {/* Visit button */}
       <div className="visit-container">
-        <a href="#visit-section" className="text-base font-bold max-w-[109px] text-violet-950">
+        <a href="#visit-section" className="text-base font-bold max-w-[109px] text-violet-950" style={{ textDecoration: 'none' }}>
           VISIT
         </a>
       </div>
@@ -93,8 +93,8 @@ function Homepage() {
 
       {/* Customer button */}
       <div className="customer-container">
-        <a href="#customer-section" className="text-base font-bold max-w-[109px] text-violet-950">
-          Progress
+        <a href="#customer-section" className="text-base font-bold max-w-[109px] text-violet-950" style={{ textDecoration: 'none' }}>
+          PROGRESS
         </a>
       </div>
 
@@ -103,7 +103,7 @@ function Homepage() {
         Customer's Progress
       </div> 
 
-      <div className="about-text text-2xl text-center text-white max-w-[734px] tracking-[2.4px]">
+      <div className="about-text text-2xl text-center text-white max-w-[734px] tracking-[2.4px]" >
         <span className="font-semibold text-white">About </span>
         <br />
         <span className="text-4xl text-white tracking-[4px]">

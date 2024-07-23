@@ -118,11 +118,11 @@
 .register {
   display: flex;
   justify-content: center; /* Center the text horizontally */
-  align-items: center; /* Center the text vertically */
+  align-items: flex-start; /* Center the text vertically */
   padding: 10px 10px; /* Adjust padding for a smaller box */
   position: absolute;
   width: 120px; /* Adjust width */
-  height: 40px; /* Adjust height */
+  height: 20px; /* Adjust height */
   left: 1450px;
   top: 16px;
   background: #fdee21;
@@ -154,6 +154,7 @@ html {
   height: 64px;
   left: 1350px;
   top: 6px;
+  font-family:'Poetsen One', sans-serif;
 
   border-radius: 10px;
 }
@@ -170,6 +171,7 @@ html {
   height: 64px;
   left: 1200px;
   top: 6px;
+  font-family:'Poetsen One', sans-serif;
 
   border-radius: 10px;
 }
@@ -358,6 +360,9 @@ html {
   padding: 20px;
   gap: 10px;
   border-radius: 10px;
+  font-family:'Poetsen One', sans-serif;
+
+
 }
 
 .button-container a {
@@ -378,6 +383,8 @@ html {
   padding: 20px;
   gap: 10px;
   border-radius: 10px;
+  font-family:'Poetsen One', sans-serif;
+
 }
 
 .visit-container a {
@@ -398,6 +405,8 @@ html {
   padding: 20px;
   gap: 10px;
   border-radius: 10px;
+  font-family:'Poetsen One', sans-serif;
+
 }
 
 .customer-container a {
