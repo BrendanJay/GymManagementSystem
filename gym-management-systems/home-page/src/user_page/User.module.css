@@ -16,6 +16,8 @@
   align-items: center;
 }
 
+
+
 /* TopBar styles */
 .topbar {
   width: 100%;
@@ -54,5 +56,3 @@
   border-radius: 50%;
   background-color: white; /* Or add an image background if needed */
 }
-
-

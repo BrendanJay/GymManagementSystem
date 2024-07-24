@@ -1,9 +1,5 @@
-
-
-
-
-
-.user-profile-container {
+/* UserProfile.css */
+.userProfileContainer {
   position: relative;
   max-width: 1200px;
   height: 600px; /* Increased height */
@@ -14,31 +10,31 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.user-profile {
+.userProfile {
   display: flex;
   flex-direction: column;
 }
 
-.profile-header {
+.profileHeader {
   display: flex;
   flex-direction: column;
   align-items: left;
 }
 
-.profile-avatar {
+.profileAvatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 0px;
 }
-.profile-name {
+
+.profileName {
   text-align: left;
   margin-top: 0px; 
 }
 
-
-.avatar-placeholder {
+.avatarPlaceholder {
   width: 100%;
   height: 100%;
   background-color: #ccc;
@@ -49,12 +45,12 @@
   color: #fff;
 }
 
-.profile-name {
+.profileNameText {
   font-size: 24px;
   font-weight: bold;
 }
 
-.history-container {
+.historyContainer {
   position: absolute;
   bottom: 20px;
   left: 20px;
@@ -64,7 +60,7 @@
   font-family: 'Poetsen One', sans-serif;
 }
 
-.membership-history, .trainer-history {
+.membershipHistory, .trainerHistory {
   width: 46%;
   height: 200px;
   background-color: #fff;
@@ -74,13 +70,12 @@
   overflow-y: auto;
 }
 
-.membership-history h3, .trainer-history h3 {
+.membershipHistory h3, .trainerHistory h3 {
   margin-top: 0;
   margin-bottom: 50px;
 }
 
-.input-fields-container{
- 
+.inputFieldsContainer {
   flex-direction: column;
   gap: 20px;
   align-items: center;
@@ -88,7 +83,7 @@
   margin-top: 20px;
 }
 
-.input-field {
+.inputField {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 25px;
@@ -96,7 +91,7 @@
   font-family: 'Poetsen One', sans-serif;
 }
 
-.edit-button {
+.editButton {
   position: absolute;
   top: 10px;
   right: 20px;
@@ -109,7 +104,6 @@
   font-family: 'Poetsen One', sans-serif;
 }
 
-.edit-button:hover {
+.editButton:hover {
   background-color: #45a049;
 }
-
