@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Homepage from './home_page/homepage';
 import Login from './login_page/login';
 import Admin from './admin_page/admin';
-
+import User from './user_page/user';
 
 const App = ({ location }) => {
   return (
@@ -14,6 +14,7 @@ const App = ({ location }) => {
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin/*" element={<Admin />} />
+        <Route path="/user/*" element={<User />} />
       </Routes>
     </div>
   );

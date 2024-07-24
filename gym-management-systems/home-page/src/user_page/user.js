@@ -1,33 +1,24 @@
-import React from 'react'
-import UserBackground from '../user_page/UserImages/UserBackgroundWhite.png';
-import UserBoard from '../user_page/UserImages/UserBoard.png';
+import React from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import TopBar from './TopBar';
+import UserProfile from './UserProfile';
+import PlanSelection from './PlanSelection';
+import TrainerSelection from './TrainerSelection';
 
 
-function Userpage() {
-    return (
-
-        <div>
-
-        {/*  AdminWhiteBackground   */}
-        <img
-        loading="lazy"
-        src={UserBackground}
-        className="background"
-        alt="background"
-        />
-
-        {/*  AdminBackground    */}
-        <img
-        loading="lazy"
-        src={UserBackground}
-        className="Userboard"
-        alt="Userbackground"
-        />
-
-        </div>
-    );
-
-
+function User() {
+  return (
+    <div className="user-app">
+      <TopBar />
+      <div className="main-content">
+        <Routes>
+          <Route path="profile" element={<UserProfile />} />
+          <Route path="planselection" element={<PlanSelection />} />
+          <Route path="trainerselection" element={<TrainerSelection />} />
+        </Routes>
+      </div>
+    </div>
+  );
 }
 
-export default Userpage
+export default User;

@@ -1,0 +1,102 @@
+/* Container for the entire plan selection section */
+.plan-selection {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  width: 100%; /* Take full width of the screen */
+}
+
+/* Title at the top left, positioned relative to the screen */
+.plan-selection h1 {
+  width: 81%;
+  text-align: start;
+  margin-bottom: 40px;
+}
+
+/* Container for the plan rows, centered */
+.plans-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+}
+
+/* Row containing the plan labels */
+.plan-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Plan labels */
+.plan-label {
+  flex: 1;
+  text-align: center;
+}
+
+.plan-description-label {
+  flex: 2;
+}
+
+/* Card for each plan, fixed width, and centered */
+.plan-card {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px; /* Gap between the rows */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  position: relative;
+  background-color: white; /* Ensure uniform background */
+  transition: border-color 0.3s ease;
+}
+
+/* Column inside each plan card */
+.plan-column {
+  flex: 1;
+  text-align: center;
+}
+
+.plan-description {
+  flex: 2;
+}
+
+/* Highlight border when a plan is selected */
+.selected {
+  border-color: #007bff;
+}
+
+/* Check icon for selected plan */
+.check-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #007bff;
+}
+
+/* Proceed to payment button */
+.proceed-button {
+  width: 200px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px; /* Gap between the last plan card and the button */
+  left: 10%;
+}
+
+.proceed-button:hover {
+  background-color: #0056b3;
+}
