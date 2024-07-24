@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { CheckCircleOutline } from '@mui/icons-material';
 import './PlanSelection.css';
+import gcashLogo from './GCash-Logo-tumb.png';
 
 function PlanSelection() {
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
+  const [gcashNumber, setGcashNumber] = useState('');
+  const [date, setDate] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const plans = [
     { name: 'Basic Plan', description: 'Access to gym facilities', duration: '1 Month', price: '$20' },
@@ -14,74 +20,118 @@ function PlanSelection() {
 
   const handleSelect = (index) => {
     setSelectedPlan(index);
+    setShowWarning(false); // Hide warning if a plan is selected
   };
 
   const handleProceed = () => {
-    if (selectedPlan !== null) {
-      setIsModalOpen(true);
+    if (selectedPlan === null) {
+      setShowWarning(true);
     } else {
-      alert('Please select a plan first.');
+      setShowModal(true);
+      setErrorMessage(''); // Clear any previous error messages
+    }
+  };
+
+  const validateGcashNumber = (number) => {
+    // Regex for +63 followed by 10 digits
+    const regex = /^\+63\d{10}$/;
+    return regex.test(number);
+  };
+
+  const handlePay = () => {
+    if (!gcashNumber || !date) {
+      setErrorMessage('Please fill in all fields.');
+    } else if (!validateGcashNumber(gcashNumber)) {
+      setErrorMessage('Please enter a valid GCash number (+63 followed by 10 digits).');
+    } else {
+      setPaymentSuccessful(true);
+      setErrorMessage(''); // Clear any previous error messages
     }
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    setShowModal(false);
+    setPaymentSuccessful(false);
   };
 
   return (
-    <div className="plan-selection">
-      <div className="plan-wrapper">
+    <div className="ps-plan-selection">
+      <div className="ps-plan-wrapper">
         <h1>Available Membership Plans</h1>
-        <div className="plans-container">
-          <div className="plan-row">
-            <span className="plan-label">Plan</span>
-            <span className="plan-label plan-description-label">Description</span>
-            <span className="plan-label">Duration</span>
-            <span className="plan-label">Price</span>
+        <div className="ps-plans-container">
+          <div className="ps-plan-row">
+            <span className="ps-plan-label">Plan</span>
+            <span className="ps-plan-label ps-plan-description-label">Description</span>
+            <span className="ps-plan-label">Duration</span>
+            <span className="ps-plan-label">Price</span>
           </div>
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`plan-card ${selectedPlan === index ? 'selected' : ''}`}
+              className={`ps-plan-card ${selectedPlan === index ? 'ps-selected' : ''}`}
               onClick={() => handleSelect(index)}
             >
-              <div className="plan-column">{plan.name}</div>
-              <div className="plan-column plan-description">{plan.description}</div>
-              <div className="plan-column">{plan.duration}</div>
-              <div className="plan-column">{plan.price}</div>
+              <div className="ps-plan-column">{plan.name}</div>
+              <div className="ps-plan-column ps-plan-description">{plan.description}</div>
+              <div className="ps-plan-column">{plan.duration}</div>
+              <div className="ps-plan-column">{plan.price}</div>
               {selectedPlan === index && (
-                <CheckCircleOutline className="check-icon" />
+                <CheckCircleOutline className="ps-check-icon" />
               )}
             </div>
           ))}
         </div>
-        <button className="proceed-button" onClick={handleProceed}>
-          Proceed to Payment
-        </button>
+        {showWarning && <p className="ps-warning-text">Please select a plan before proceeding.</p>}
+        <button className="ps-proceed-button" onClick={handleProceed}>Proceed to Payment</button>
       </div>
 
-      {isModalOpen && (
-        <div className="plan-selection-modal-overlay">
-          <div className="plan-selection-modal-content">
-            <button className="plan-selection-modal-close-button" onClick={handleCloseModal}>
-              &times;
-            </button>
-            <h2>Payment Processing</h2>
-            <form>
-              <label>
-                Card Number:
-                <input type="text" placeholder="1234 5678 9012 3456" />
-              </label>
-              <label>
-                Expiry Date:
-                <input type="text" placeholder="MM/YY" />
-              </label>
-              <label>
-                CVV:
-                <input type="text" placeholder="123" />
-              </label>
-              <button type="submit">Pay Now</button>
-            </form>
+      {showModal && (
+        <div className="ps-modal-overlay">
+          <div className="ps-modal-content">
+            <div className="ps-modal-header">
+              <img src={gcashLogo} alt="GCash Logo" className="ps-gcash-logo" />
+              <button className="ps-close-modal" onClick={handleCloseModal}>X</button>
+            </div>
+            
+            {paymentSuccessful ? (
+              <div className="ps-success-message">
+                <h2>Payment Successful!</h2>
+                <p>Thank you for your purchase.</p>
+                <button className="ps-close-modal" onClick={handleCloseModal}>Close</button>
+              </div>
+            ) : (
+              <>
+                <div className="ps-input-container">
+                  <label>GCash Number</label>
+                  <label>Date</label>
+                </div>
+                <div className="ps-line" /> {/* Line below input fields */}
+                <div className="ps-input-container">
+                  <input
+                    type="text"
+                    placeholder="Enter GCash Number"
+                    value={gcashNumber}
+                    onChange={(e) => setGcashNumber(e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </div>
+                <div className="ps-line" /> {/* Line below input fields */}
+                <div className="ps-plan-details">
+                  <p><strong>You are about to purchase</strong></p>
+                  <div className="ps-line" /> {/* Line below "You are about to purchase" */}
+                  <p>Plan: {plans[selectedPlan].name}</p>
+                  <p>{plans[selectedPlan].description}</p>
+                  <p>{plans[selectedPlan].duration}</p>
+                </div>
+                <div className="ps-line" /> {/* Line below plan details */}
+                {errorMessage && <p className="ps-error-text">{errorMessage}</p>}
+                <button className="ps-pay-button" onClick={handlePay}>Pay {plans[selectedPlan].price}</button>
+              </>
+            )}
           </div>
         </div>
       )}
