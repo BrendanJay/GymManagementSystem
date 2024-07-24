@@ -1,31 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Sales.css";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { collection, setDoc, doc, getDocs, deleteDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 const Sales = () => {
-    const [salesData, setSalesData] = useState([
-        { id: 1, memberName: "John Doe", plan: "Gold", sessions: 10, totalPrice: "$200", purchaseDate: "2024-06-01" },
-        { id: 2, memberName: "Jane Smith", plan: "Silver", sessions: 5, totalPrice: "$100", purchaseDate: "2024-06-15" },
-        { id: 3, memberName: "Alice Brown", plan: "Platinum", sessions: 15, totalPrice: "$300", purchaseDate: "2024-06-10" },
-        { id: 4, memberName: "Bob Green", plan: "Bronze", sessions: 8, totalPrice: "$150", purchaseDate: "2024-06-20" },
-        { id: 5, memberName: "Eve Jones", plan: "Gold", sessions: 12, totalPrice: "$240", purchaseDate: "2024-06-05" },
-      ]);
-      
+    const [salesData, setSalesData] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [members, setMembers] = useState([]);
+    const [currentSale, setCurrentSale] = useState(null);
+    const [filteredSales, setFilteredSales] = useState(salesData); // State to hold filtered sales
+    const [membershipPlans, setMembershipPlans] = useState([]);
+    
+    useEffect(() => {
+      const fetchData = async () => {
+        const salesRef = collection(db, 'sales');
+        const salesSnapshot = await getDocs(salesRef);
+        const salesArray = salesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSalesData(salesArray);
+        setFilteredSales(salesArray);
 
-  const [showModal, setShowModal] = useState(false);
-  const [currentSale, setCurrentSale] = useState(null);
-  const [filteredSales, setFilteredSales] = useState(salesData); // State to hold filtered sales
+          const membersRef = collection(db, 'members');
+          const membersSnapshot = await getDocs(membersRef);
+          const membersArray = membersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setMembers(membersArray);
+
+          const plansRef = collection(db, 'membershipPlans');
+          const plansSnapshot = await getDocs(plansRef);
+          const plansArray = plansSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setMembershipPlans(plansArray);
+      };
+
+      fetchData();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCurrentSale((prevSale) => ({
-      ...prevSale,
-      [name]: value,
-    }));
-  };
+    if (name === 'plan') {
+        const selectedPlan = membershipPlans.find(plan => plan.planName === value);
+        setCurrentSale(prevSale => ({
+            ...prevSale,
+            [name]: value,
+            totalPrice: selectedPlan ? selectedPlan.price : 0
+        }));
+    } else {
+        setCurrentSale(prevSale => ({
+            ...prevSale,
+            [name]: value
+        }));
+    }
+};
 
   const handleAddNewClick = () => {
     setCurrentSale({
@@ -45,21 +72,59 @@ const Sales = () => {
     setShowModal(true);
   };
 
-  const handleSave = () => {
-    if (currentSale.id > salesData.length) {
-      setSalesData([...salesData, currentSale]);
-    } else {
-      setSalesData(
-        salesData.map((sale) => (sale.id === currentSale.id ? currentSale : sale))
-      );
+  const handleSave = async () => {
+    try {
+      const salesRef = collection(db, 'sales');
+      
+      if (currentSale.id) {
+        // Updating existing sale
+        await setDoc(doc(db, 'sales', currentSale.id.toString()), {
+          memberName: currentSale.memberName,
+          plan: currentSale.plan,
+          sessions: parseInt(currentSale.sessions),
+          totalPrice: parseFloat(currentSale.totalPrice),
+          purchaseDate: currentSale.purchaseDate
+        }, { merge: true });
+  
+        setSalesData(salesData.map(sale => 
+          sale.id === currentSale.id ? currentSale : sale
+        ));
+      } else {
+        // Adding new sale
+        const snapshot = await getDocs(salesRef);
+        const ids = snapshot.docs.map(doc => parseInt(doc.id));
+        const nextId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+  
+        await setDoc(doc(db, 'sales', nextId.toString()), {
+          id: nextId,
+          memberName: currentSale.memberName,
+          plan: currentSale.plan,
+          sessions: parseInt(currentSale.sessions),
+          totalPrice: parseFloat(currentSale.totalPrice),
+          purchaseDate: currentSale.purchaseDate
+        });
+  
+        setSalesData([...salesData, { ...currentSale, id: nextId }]);
+      }
+  
+      setShowModal(false);
+      setCurrentSale(null);
+    } catch (error) {
+      console.error("Error saving sale: ", error);
+      alert(error.message);
     }
-    setShowModal(false);
-    setCurrentSale(null);
   };
 
-  const handleDelete = (id) => {
-    const updatedSales = salesData.filter((sale) => sale.id !== id);
-    setSalesData(updatedSales);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'sales', id.toString()));
+      setSalesData(salesData.filter(sale => sale.id !== id));
+      setFilteredSales(filteredSales.filter(sale => sale.id !== id));
+    } catch (error) {
+      console.error("Error deleting sale: ", error);
+      alert(error.message);
+    }
   };
 
   const handleSearch = (event) => {
@@ -120,31 +185,40 @@ const Sales = () => {
           ))}
         </tbody>
       </table>
-
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <div className="modal-header">
-              <h2>{currentSale.id > salesData.length ? "Add New Sale" : "Edit Sale"}</h2>
-            </div>
-            <div className="modal-content">
-              <label>Member Name</label>
-              <input type="text" name="memberName" value={currentSale.memberName} onChange={handleInputChange} />
-              <label>Plan</label>
-              <input type="text" name="plan" value={currentSale.plan} onChange={handleInputChange} />
-              <label>Sessions</label>
-              <input type="number" name="sessions" value={currentSale.sessions} onChange={handleInputChange} />
-              <label>Total Price</label>
-              <input type="number" name="totalPrice" value={currentSale.totalPrice} onChange={handleInputChange} />
-              <label>Purchase Date</label>
-              <input type="date" name="purchaseDate" value={currentSale.purchaseDate} onChange={handleInputChange} />
-            </div>
-            <div className="modal-footer">
-              <button className="save-button" onClick={handleSave}>Save</button>
-              <button className="cancel-button" onClick={handleCancel}>Cancel</button>
-            </div>
+              <div className="modal-header">
+                  <h2>{currentSale.id ? "Edit Sale" : "Add New Sale"}</h2>
+              </div>
+              <div className="modal-content">
+                  <label>Member Name</label>
+                  <select name="memberName" value={currentSale.memberName} onChange={handleInputChange}>
+                      <option value="">Select Member</option>
+                      {members.map(member => (
+                          <option key={member.id} value={member.fullName}>{member.fullName}</option>
+                      ))}
+                  </select>
+                  <label>Plan</label>
+                  <select name="plan" value={currentSale.plan} onChange={handleInputChange}>
+                      <option value="">Select Plan</option>
+                      {membershipPlans.map(plan => (
+                          <option key={plan.id} value={plan.planName}>{plan.planName}</option>
+                      ))}
+                  </select>
+                  <label>Sessions</label>
+                  <input type="number" name="sessions" value={currentSale.sessions} onChange={handleInputChange} />
+                  <label>Total Price</label>
+                  <input type="number" name="totalPrice" value={currentSale.totalPrice} readOnly />
+                  <label>Purchase Date</label>
+                  <input type="date" name="purchaseDate" value={currentSale.purchaseDate} onChange={handleInputChange} />
+              </div>
+              <div className="modal-footer">
+                  <button className="save-button" onClick={handleSave}>Save</button>
+                  <button className="cancel-button" onClick={handleCancel}>Cancel</button>
+              </div>
           </div>
-        </div>
+      </div>
       )}
     </div>
   );

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Equipments.css";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import { collection, setDoc, doc, deleteDoc, getDocs } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 const Equipments = () => {
   const initialEquipmentState = {
@@ -12,18 +14,24 @@ const Equipments = () => {
     condition: 'Good',
   };
 
-  const [equipmentsData, setEquipmentsData] = useState([
-    { id: 1, equipmentName: "Treadmill", brand: "Brand A", quantity: 10, condition: "Good" },
-    { id: 2, equipmentName: "Dumbbell", brand: "Brand B", quantity: 50, condition: "Excellent" },
-    { id: 3, equipmentName: "Stationary Bike", brand: "Brand C", quantity: 15, condition: "Fair" },
-    { id: 4, equipmentName: "Bench Press", brand: "Brand D", quantity: 5, condition: "Poor" },
-    { id: 5, equipmentName: "Elliptical Trainer", brand: "Brand E", quantity: 20, condition: "Good" },
-  ]);
-
+  const [equipmentsData, setEquipmentsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newEquipment, setNewEquipment] = useState(initialEquipmentState);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editEquipmentId, setEditEquipmentId] = useState(null);
+  const [originalEquipmentsData, setOriginalEquipmentsData] = useState([]);
+
+  useEffect(() => {
+    const fetchEquipments = async () => {
+      const equipmentsRef = collection(db, 'equipments');
+      const snapshot = await getDocs(equipmentsRef);
+      const equipmentsArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setEquipmentsData(equipmentsArray);
+      setOriginalEquipmentsData(equipmentsArray);
+    };
+  
+    fetchEquipments();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,19 +47,39 @@ const Equipments = () => {
     setShowModal(true);
   };
 
-  const handleSave = () => {
-    if (isEditMode) {
-      const updatedEquipments = equipmentsData.map(equipment =>
-        equipment.id === editEquipmentId ? { ...newEquipment, id: editEquipmentId } : equipment
-      );
-      setEquipmentsData(updatedEquipments);
-    } else {
-      setEquipmentsData([...equipmentsData, { ...newEquipment, id: equipmentsData.length + 1 }]);
+  const handleSave = async () => {
+    try {
+      const equipmentsRef = collection(db, 'equipments');
+      let equipmentToSave = { ...newEquipment };
+  
+      if (!isEditMode) {
+        const snapshot = await getDocs(equipmentsRef);
+        const ids = snapshot.docs.map(doc => parseInt(doc.id));
+        const nextId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+        equipmentToSave.id = nextId;
+      }
+  
+      await setDoc(doc(db, 'equipments', equipmentToSave.id.toString()), equipmentToSave);
+  
+      setEquipmentsData(prevData => {
+        if (isEditMode) {
+          return prevData.map(equipment => 
+            equipment.id === equipmentToSave.id ? equipmentToSave : equipment
+          );
+        } else {
+          return [...prevData, equipmentToSave];
+        }
+      });
+  
+      setShowModal(false);
+      setNewEquipment(initialEquipmentState);
+      setIsEditMode(false);
+    } catch (error) {
+      console.error("Error saving equipment: ", error);
+      alert(error.message);
     }
-    setShowModal(false);
-    setNewEquipment(initialEquipmentState);
   };
-
+  
   const handleCancel = () => {
     setShowModal(false);
   };
@@ -62,15 +90,28 @@ const Equipments = () => {
     setNewEquipment(equipment);
     setShowModal(true);
   };
-
-  const handleDelete = (id) => {
-    const updatedEquipments = equipmentsData.filter(equipment => equipment.id !== id);
-    setEquipmentsData(updatedEquipments);
+  
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'equipments', id.toString()));
+      setEquipmentsData(equipmentsData.filter(equipment => equipment.id !== id));
+    } catch (error) {
+      console.error("Error deleting equipment: ", error);
+      alert(error.message);
+    }
   };
+  
 
   const handleSearch = (event) => {
-    const searchTerm = event.target.value;
-    console.log(`Searching for: ${searchTerm}`);
+    const searchTerm = event.target.value.toLowerCase();
+    if (searchTerm === '') {
+      setEquipmentsData(originalEquipmentsData);
+    } else {
+      const filteredEquipments = originalEquipmentsData.filter((equipment) =>
+        equipment.equipmentName.toLowerCase().includes(searchTerm)
+      );
+      setEquipmentsData(filteredEquipments);
+    }
   };
 
   return (
@@ -116,7 +157,6 @@ const Equipments = () => {
           ))}
         </tbody>
       </table>
-
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">

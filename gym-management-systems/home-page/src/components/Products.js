@@ -1,19 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Products.css";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
+import { collection, getDocs, setDoc, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 const Products = () => {
-  const [productsData, setProductsData] = useState([
-    { id: 1, productName: "Protein Powder", brand: "Brand A", quantity: 20, price: 50, dateAdded: "2024-01-01", expirationDate: "2025-01-01" },
-    { id: 2, productName: "Energy Bar", brand: "Brand B", quantity: 100, price: 2, dateAdded: "2024-01-15", expirationDate: "2025-01-15" },
-  ]);
-
-  const [showModal, setShowModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [editProductId, setEditProductId] = useState(null);
-  const [newProduct, setNewProduct] = useState({
+  const initialProductState = {
     id: '',
     productName: '',
     brand: '',
@@ -21,7 +15,27 @@ const Products = () => {
     price: '',
     dateAdded: '',
     expirationDate: '',
-  });
+  };
+  
+  const [productsData, setProductsData] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [newProduct, setNewProduct] = useState(initialProductState);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editProductId, setEditProductId] = useState(null);
+  const [originalProductsData, setOriginalProductsData] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const productsRef = collection(db, 'products');
+      const snapshot = await getDocs(productsRef);
+      const productsArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setProductsData(productsArray);
+      setOriginalProductsData(productsArray);
+    };
+  
+    fetchProducts();
+  }, []);
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,53 +59,78 @@ const Products = () => {
     });
   };
 
-  const handleEditClick = (product) => {
-    setShowModal(true);
-    setIsEdit(true);
-    setEditProductId(product.id);
-    setNewProduct({
-      productName: product.productName,
-      brand: product.brand,
-      quantity: product.quantity,
-      price: product.price,
-      dateAdded: product.dateAdded,
-      expirationDate: product.expirationDate,
-    });
-  };
-
-  const handleSave = () => {
-    if (isEdit) {
-      setProductsData(productsData.map(product => 
-        product.id === editProductId ? { ...newProduct, id: editProductId } : product
-      ));
-    } else {
-      setProductsData([...productsData, { ...newProduct, id: productsData.length + 1 }]);
+  const handleSave = async () => {
+    try {
+      const productsRef = collection(db, 'products');
+      let productToSave = { ...newProduct };
+  
+      if (!isEdit) {
+        const snapshot = await getDocs(productsRef);
+        const ids = snapshot.docs.map(doc => parseInt(doc.id));
+        const nextId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+        productToSave.id = nextId;
+      }
+  
+      await setDoc(doc(db, 'products', productToSave.id.toString()), productToSave);
+  
+      setProductsData(prevData => {
+        if (isEdit) {
+          return prevData.map(product => 
+            product.id === productToSave.id ? productToSave : product
+          );
+        } else {
+          return [...prevData, productToSave];
+        }
+      });
+  
+      setShowModal(false);
+      setNewProduct(initialProductState);
+      setIsEdit(false);
+    } catch (error) {
+      console.error("Error saving product: ", error);
+      alert(error.message);
     }
-    setShowModal(false);
-    setNewProduct({
-      id: '',
-      productName: '',
-      brand: '',
-      quantity: '',
-      price: '',
-      dateAdded: '',
-      expirationDate: '',
-    });
   };
+  
+  
+  
+  
 
   const handleCancel = () => {
     setShowModal(false);
   };
 
-  const handleDelete = (id) => {
-    const updatedProducts = productsData.filter(product => product.id !== id);
-    setProductsData(updatedProducts);
+  const handleEdit = (product) => {
+    setIsEdit(true);
+    setEditProductId(product.id);
+    setNewProduct(product);
+    setShowModal(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'products', id.toString()));
+      setProductsData(productsData.filter(product => product.id !== id));
+    } catch (error) {
+      console.error("Error deleting product: ", error);
+      //alert(error.message);
+    }
   };
 
   const handleSearch = (event) => {
-    const searchTerm = event.target.value;
-    console.log(`Searching for: ${searchTerm}`);
+    const searchTerm = event.target.value.toLowerCase();
+    if (searchTerm === '') {
+      setProductsData(originalProductsData);
+    } else {
+      const filteredProducts = originalProductsData.filter((product) =>
+        product.productName.toLowerCase().includes(searchTerm)
+      );
+      setProductsData(filteredProducts);
+    }
   };
+  
+  
+  
 
   return (
     <div className="products">
@@ -129,7 +168,7 @@ const Products = () => {
               <td>{product.dateAdded}</td>
               <td>{product.expirationDate}</td>
               <td>
-                <button className="edit-button" onClick={() => handleEditClick(product)}>
+                <button className="edit-button" onClick={() => handleEdit(product)}>
                   <EditIcon className="icon" />
                 </button>
                 <button className="delete-button" onClick={() => handleDelete(product.id)}>
@@ -140,7 +179,6 @@ const Products = () => {
           ))}
         </tbody>
       </table>
-
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">

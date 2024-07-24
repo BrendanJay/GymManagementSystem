@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
 import './login.css';
 
 const Login = () => {
@@ -29,12 +29,18 @@ const Login = () => {
       alert("Passwords do not match!");
       return;
     }
-
+  
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-      const user = userCredential.user;
-
-      await setDoc(doc(db, "users", user.uid), {
+      //const user = userCredential.user;
+      const membersRef = collection(db, 'members');
+      const snapshot = await getDocs(membersRef);
+      const ids = snapshot.docs.map(doc => parseInt(doc.id));
+      const nextId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+  
+      // Add user to users collection
+      await setDoc(doc(db, "users", nextId.toString()), {
+        id: nextId,
         lastName: formData.lastName,
         firstName: formData.firstName,
         age: formData.age,
@@ -44,24 +50,56 @@ const Login = () => {
         email: formData.email,
         password: formData.password,
       });
-
+  
+      // Add user to members collection with additional fields
+      await setDoc(doc(db, "members", nextId.toString()), {
+        id: nextId,
+        username: formData.email.split('@')[0], // Using email as username
+        fullName: `${formData.firstName} ${formData.lastName}`,
+        lastName: formData.lastName,
+        firstName: formData.firstName,
+        age: formData.age,
+        gender: formData.gender,
+        birthdate: formData.birthdate,
+        contactNumber: formData.contactNumber,
+        email: formData.email,
+        address: "", // Empty field to be filled later
+        membershipPlan: "", // Empty field to be filled later
+        duration: "", // Empty field to be filled later
+        startDate: "", // Empty field to be filled later
+        endDate: "", // Empty field to be filled later
+        trainer: "", // Empty field to be filled later
+        sessions: 0, // Default value
+        membershipPlansHistory: [], // Empty array to be filled later
+        trainerHistory: [], // Empty array to be filled later
+        registrationDate: new Date().toISOString(),
+      });
+  
       alert("Account created successfully!");
     } catch (error) {
       console.error("Error creating user: ", error);
       alert(error.message);
     }
   };
+  
+  
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      alert("Login successful!");
-      navigate('/admin'); // Navigate to admin page upon successful login
+      if (formData.email === "admin@gmail.com" && formData.password === "password") {
+        alert("Admin login successful!");
+        navigate('/admin');
+      } else {
+        await signInWithEmailAndPassword(auth, formData.email, formData.password);
+        alert("Login successful!");
+        navigate('/user');
+      }
     } catch (error) {
       console.error("Error logging in: ", error);
       alert(error.message);
     }
   };
+  
 
   return (
     <div className="login-page">

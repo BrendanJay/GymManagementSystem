@@ -160,32 +160,56 @@ const Members = () => {
   
   const handleSaveMember = async () => {
     const membersRef = collection(db, 'members');
+    const salesRef = collection(db, 'sales');
+    const plansRef = collection(db, 'membershipPlans');
+  
     if (newMember.id) {
       // Editing existing member
       await setDoc(doc(membersRef, newMember.id.toString()), newMember);
       setMembersData(membersData.map(member => member.id === newMember.id ? newMember : member));
     } else {
-    const nextId = await getNextId();
-    const memberData = {
-      ...newMember,
-      membershipPlansHistory: [{
-        id: 1,
-        planName: newMember.membershipPlan,
-        startDate: newMember.startDate,
-        endDate: newMember.endDate,
-        status: 'Active'
-      }],
-      trainerHistory: [{
-        id: 1,
-        trainerName: newMember.trainer,
-        sessions: newMember.sessions,
-        status: 'Active'
-      }]
-    };
-    await setDoc(doc(membersRef, nextId.toString()), memberData);
-    const newMemberWithId = { id: nextId, ...memberData };
-    setMembersData([...membersData, newMemberWithId]);
+      const nextId = await getNextId();
+      const memberData = {
+        ...newMember,
+        membershipPlansHistory: [{
+          id: 1,
+          planName: newMember.membershipPlan,
+          startDate: newMember.startDate,
+          endDate: newMember.endDate,
+          status: 'Active'
+        }],
+        trainerHistory: [{
+          id: 1,
+          trainerName: newMember.trainer,
+          sessions: newMember.sessions,
+          status: 'Active'
+        }]
+      };
+      await setDoc(doc(membersRef, nextId.toString()), memberData);
+      const newMemberWithId = { id: nextId, ...memberData };
+      setMembersData([...membersData, newMemberWithId]);
     }
+    
+    const planSnapshot = await getDocs(query(plansRef, where('planName', '==', newMember.membershipPlan)));
+    let planPrice = 0;
+    if (!planSnapshot.empty) {
+      planPrice = planSnapshot.docs[0].data().price;
+    }
+  
+    // Create sales record
+    const salesSnapshot = await getDocs(salesRef);
+    const salesIds = salesSnapshot.docs.map(doc => parseInt(doc.id));
+    const nextSalesId = salesIds.length > 0 ? Math.max(...salesIds) + 1 : 1;
+  
+    await setDoc(doc(salesRef, nextSalesId.toString()), {
+      id: nextSalesId,
+      memberName: newMember.fullName,
+      plan: newMember.membershipPlan,
+      sessions: parseInt(newMember.sessions),
+      totalPrice: 0, // You may want to calculate this based on the plan
+      purchaseDate: new Date().toISOString().split('T')[0]
+    });
+  
     setNewMember({
       username: "",
       fullName: "",
