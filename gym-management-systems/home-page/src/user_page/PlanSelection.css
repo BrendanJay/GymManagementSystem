@@ -4,17 +4,32 @@
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  align-items: end;
+  align-items: center; /* Center the content within the plan-selection */
   max-height: 80vh;
   overflow-y: auto;
-  position: relative;
-  width: 100%; /* Take full width of the screen */
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding is included in width/height calculations */
 }
 
-/* Title at the top left, positioned relative to the screen */
+/* Wrapper for all the content */
+.plan-wrapper {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1000px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Title at the top left */
 .plan-selection h1 {
-  width: 81%;
-  text-align: start;
+  width: 100%;
+  text-align: center;
   margin-bottom: 40px;
 }
 
@@ -23,7 +38,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80%;
+  width: 100%;
 }
 
 /* Row containing the plan labels */
@@ -53,11 +68,11 @@
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  margin-bottom: 20px; /* Gap between the rows */
+  margin-bottom: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   position: relative;
-  background-color: white; /* Ensure uniform background */
+  background-color: white;
   transition: border-color 0.3s ease;
 }
 
@@ -93,8 +108,8 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px; /* Gap between the last plan card and the button */
-  left: 10%;
+  margin-top: 20px;
+  align-self: center;
 }
 
 .proceed-button:hover {

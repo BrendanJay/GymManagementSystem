@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap');
+
+.user-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.main-content {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* TopBar styles */
+.topbar {
+  width: 100%;
+  max-width: 1880px; /* Adjust the max width as needed */
+  margin: 0 auto; /* Center the topbar */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px; /* Adjust padding to prevent overflow */
+  background-color: rgb(26, 19, 99);
+  font-family: 'Poetsen One', sans-serif; /* Apply font-family here */
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px; /* Adjust the gap between navigation links */
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  padding: 25px 20px;
+}
+
+.nav-links a:hover, .nav-links a.selected, .nav-links a.active {
+  background-color: rgb(61, 45, 226);
+}
+
+.profile-icon {
+  margin-left: auto; /* Push profile icon to the far right */
+}
+
+.profile-icon .profile-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white; /* Or add an image background if needed */
+}

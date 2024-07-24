@@ -17,31 +17,33 @@ function PlanSelection() {
 
   return (
     <div className="plan-selection">
-      <h1>Available Membership Plans:</h1>
-      <div className="plans-container">
-        <div className="plan-row">
-          <span className="plan-label">Plan</span>
-          <span className="plan-label plan-description-label">Description</span>
-          <span className="plan-label">Duration</span>
-          <span className="plan-label">Price</span>
-        </div>
-        {plans.map((plan, index) => (
-          <div
-            key={index}
-            className={`plan-card ${selectedPlan === index ? 'selected' : ''}`}
-            onClick={() => handleSelect(index)}
-          >
-            <div className="plan-column">{plan.name}</div>
-            <div className="plan-column plan-description">{plan.description}</div>
-            <div className="plan-column">{plan.duration}</div>
-            <div className="plan-column">{plan.price}</div>
-            {selectedPlan === index && (
-              <CheckCircleOutline className="check-icon" />
-            )}
+      <div className="plan-wrapper">
+        <h1>Available Membership Plans:</h1>
+        <div className="plans-container">
+          <div className="plan-row">
+            <span className="plan-label">Plan</span>
+            <span className="plan-label plan-description-label">Description</span>
+            <span className="plan-label">Duration</span>
+            <span className="plan-label">Price</span>
           </div>
-        ))}
+          {plans.map((plan, index) => (
+            <div
+              key={index}
+              className={`plan-card ${selectedPlan === index ? 'selected' : ''}`}
+              onClick={() => handleSelect(index)}
+            >
+              <div className="plan-column">{plan.name}</div>
+              <div className="plan-column plan-description">{plan.description}</div>
+              <div className="plan-column">{plan.duration}</div>
+              <div className="plan-column">{plan.price}</div>
+              {selectedPlan === index && (
+                <CheckCircleOutline className="check-icon" />
+              )}
+            </div>
+          ))}
+        </div>
+        <button className="proceed-button">Proceed to Payment</button>
       </div>
-      <button className="proceed-button">Proceed to Payment</button>
     </div>
   );
 }
