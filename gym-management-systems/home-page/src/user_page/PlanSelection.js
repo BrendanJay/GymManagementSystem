@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircleOutline } from '@mui/icons-material';
 import './PlanSelection.css';
 import gcashLogo from './GCash-Logo-tumb.png';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 function PlanSelection() {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -11,12 +13,18 @@ function PlanSelection() {
   const [gcashNumber, setGcashNumber] = useState('');
   const [date, setDate] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [plans, setPlans] = useState([]);
 
-  const plans = [
-    { name: 'Basic Plan', description: 'Basic gym access', price: 500, duration: '1 month' },
-    { name: 'Premium Plan', description: 'All access + personal trainer', price: 1000, duration: '1 month' },
-    // Add more plans as needed
-  ];
+  useEffect(() => {
+    const fetchPlans = async () => {
+      const plansRef = collection(db, 'membershipPlans');
+      const snapshot = await getDocs(plansRef);
+      const plansArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setPlans(plansArray);
+    };
+
+    fetchPlans();
+  }, []);
 
   const handleSelect = (index) => {
     setSelectedPlan(index);
@@ -71,7 +79,7 @@ function PlanSelection() {
               className={`ps-plan-card ${selectedPlan === index ? 'ps-selected' : ''}`}
               onClick={() => handleSelect(index)}
             >
-              <div className="ps-plan-column">{plan.name}</div>
+              <div className="ps-plan-column">{plan.planName}</div> {/* Updated field name */}
               <div className="ps-plan-column ps-plan-description">{plan.description}</div>
               <div className="ps-plan-column">{plan.duration}</div>
               <div className="ps-plan-column">₱{plan.price}</div>
@@ -123,7 +131,7 @@ function PlanSelection() {
                 <div className="ps-plan-details">
                   <p><strong>You are about to purchase</strong></p>
                   <div className="ps-line" /> {/* Line below "You are about to purchase" */}
-                  <p>{plans[selectedPlan].name}</p>
+                  <p>{plans[selectedPlan].planName}</p> {/* Updated field name */}
                   <p>{plans[selectedPlan].description}</p>
                   <p>{plans[selectedPlan].duration}</p>
                   <p>₱{plans[selectedPlan].price}</p>
