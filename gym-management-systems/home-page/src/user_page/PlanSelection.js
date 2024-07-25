@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircleOutline } from '@mui/icons-material';
 import './PlanSelection.css';
 import gcashLogo from './GCash-Logo-tumb.png';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+import { collection, query, where, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
+import { auth, db } from '../firebaseConfig';
 
 function PlanSelection() {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -40,27 +40,77 @@ function PlanSelection() {
     }
   };
 
+  const calculateEndDate = (startDate, duration) => {
+    const start = new Date(startDate);
+    const [amount, unit] = duration.split(' ');
+    
+    switch(unit.toLowerCase()) {
+      case 'day':
+      case 'days':
+        start.setDate(start.getDate() + parseInt(amount));
+        break;
+      case 'week':
+      case 'weeks':
+        start.setDate(start.getDate() + (parseInt(amount) * 7));
+        break;
+      case 'month':
+      case 'months':
+        start.setMonth(start.getMonth() + parseInt(amount));
+        break;
+      case 'year':
+      case 'years':
+        start.setFullYear(start.getFullYear() + parseInt(amount));
+        break;
+      default:
+        console.warn(`Unhandled duration unit: ${unit}`);
+    }
+    
+    return start.toISOString().split('T')[0];
+  };
+  
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setPaymentSuccessful(false);
+  };
+ 
+
   const validateGcashNumber = (number) => {
     // Regex for +63 followed by 10 digits
     const regex = /^\+63\d{10}$/;
     return regex.test(number);
   };
 
-  const handlePay = () => {
+  const handlePay = async () => {
     if (!gcashNumber || !date) {
       setErrorMessage('Please fill in all fields.');
     } else if (!validateGcashNumber(gcashNumber)) {
       setErrorMessage('Please enter a valid GCash number (+63 followed by 10 digits).');
     } else {
-      setPaymentSuccessful(true);
-      setErrorMessage(''); // Clear any previous error messages
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const q = query(collection(db, 'members'), where('email', '==', user.email));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0];
+            await updateDoc(userDoc.ref, {
+              membershipPlansHistory: arrayUnion({
+                planName: plans[selectedPlan].planName,
+                startDate: date,
+                endDate: calculateEndDate(date, plans[selectedPlan].duration),
+                status: 'Active'
+              })
+            });
+            setPaymentSuccessful(true);
+            setErrorMessage('');
+          }
+        }
+      } catch (error) {
+        console.error("Error updating user's membership plan history:", error);
+        setErrorMessage('An error occurred while processing your payment. Please try again.');
+      }
     }
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setPaymentSuccessful(false);
-  };
+  };  
 
   return (
     <div className="ps-plan-selection">

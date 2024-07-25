@@ -77,7 +77,6 @@
   justify-content: space-between;
 }
 
-/* Styles for membership history section */
 .userProfile__membershipHistory, .userProfile__trainerHistory {
   width: 45%;
   height: 400px;
@@ -87,8 +86,9 @@
   padding: 15px;
   overflow-y: auto;
   font-family: 'Oswald', sans-serif;
-  position: relative; /* Ensure positioning context for margins */
+  position: relative;
 }
+
 
 /* Title of history sections */
 .userProfile__membershipHistory h3, .userProfile__trainerHistory h3 {
