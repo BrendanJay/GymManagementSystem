@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircleOutline } from '@mui/icons-material';
 import './TrainerSelection.css';
 import gcashLogo from './GCash-Logo-tumb.png';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 function TrainerSelection() {
+  const [trainers, setTrainers] = useState([]);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -13,11 +16,20 @@ function TrainerSelection() {
   const [sessions, setSessions] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const trainers = [
-    { name: 'John Doe', specialty: 'Strength Training', rate: 700 },
-    { name: 'Jane Smith', specialty: 'Cardio Training', rate: 600 },
-    // Add more trainers as needed
-  ];
+  // Fetch trainers from Firestore
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      const trainersRef = collection(db, 'trainers');
+      const snapshot = await getDocs(trainersRef);
+      const trainersData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setTrainers(trainersData);
+    };
+  
+    fetchTrainers();
+  }, []);
 
   const handleSelect = (index) => {
     setSelectedTrainer(index);
@@ -56,7 +68,7 @@ function TrainerSelection() {
   };
 
   const calculateTotal = () => {
-    return selectedTrainer !== null && sessions ? trainers[selectedTrainer].rate * sessions : 0;
+    return selectedTrainer !== null && sessions ? trainers[selectedTrainer].ratePerSession * sessions : 0;
   };
 
   return (
@@ -71,13 +83,13 @@ function TrainerSelection() {
           </div>
           {trainers.map((trainer, index) => (
             <div
-              key={index}
+              key={trainer.id}
               className={`ts-trainer-card ${selectedTrainer === index ? 'ts-selected' : ''}`}
               onClick={() => handleSelect(index)}
             >
-              <div className="ts-trainer-column">{trainer.name}</div>
+              <div className="ts-trainer-column">{trainer.fullName}</div>
               <div className="ts-trainer-column ts-trainer-specialty">{trainer.specialty}</div>
-              <div className="ts-trainer-column">₱{trainer.rate} per session</div>
+              <div className="ts-trainer-column">₱{trainer.ratePerSession} per session</div>
               {selectedTrainer === index && (
                 <CheckCircleOutline className="ts-check-icon" />
               )}
@@ -133,9 +145,9 @@ function TrainerSelection() {
                 <div className="ts-trainer-details">
                   <p><strong>You are about to purchase</strong></p>
                   <div className="ts-line" /> {/* Line below "You are about to purchase" */}
-                  <p>Trainer: {trainers[selectedTrainer].name}</p>
+                  <p>Trainer: {trainers[selectedTrainer].fullName}</p>
                   <p>{trainers[selectedTrainer].specialty}</p>
-                  <p>₱{trainers[selectedTrainer].rate} per session</p>
+                  <p>₱{trainers[selectedTrainer].ratePerSession} per session</p>
                 </div>
                 <div className="ts-line" /> {/* Line below trainer details */}
                 {errorMessage && <p className="ts-error-text">{errorMessage}</p>}
