@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 
 .login-page {
   height: 100vh;
@@ -36,6 +38,7 @@
   width: 800px;
   max-width: 200%;
   min-height: 600px;
+  
 }
 
 .login-page .container p {
@@ -47,6 +50,7 @@
 
 .login-page .container span {
   font-size: 12px;
+  font-family: 'Poetsen One', sans-serif; /* Apply font-family here */
 }
 
 .login-page .container a {
@@ -54,6 +58,7 @@
   font-size: 13px;
   text-decoration: none;
   margin: 15px 0 10px;
+  
 }
 
 .login-page .container button {
@@ -69,11 +74,13 @@
   text-transform: uppercase;
   margin-top: 35px;
   cursor: pointer;
+  
 }
 
 .login-page .container button.hidden {
   background-color: transparent;
   border-color: #faf7f7;
+  
 }
 
 .login-page .container form {

@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 /* Scoped Plan Selection Styles */
 .ps-plan-selection {
   padding: 20px;
-  font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,6 +31,7 @@
   width: 100%;
   text-align: center;
   margin-bottom: 40px;
+  font-family: 'Oswald', Arial, sans-serif;
 }
 
 .ps-plans-container {
@@ -36,6 +39,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  font-family: 'Work Sans', Arial, sans-serif;
 }
 
 .ps-plan-row {
@@ -80,7 +84,8 @@
 }
 
 .ps-selected {
-  border-color: #007bff;
+  border-color: rgb(61, 45, 226);
+  border-width: 3px;
 }
 
 .ps-check-icon {
@@ -100,6 +105,9 @@
   cursor: pointer;
   margin-top: 20px;
   align-self: center;
+  font-family: 'Work Sans', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 15px;
 }
 
 .ps-proceed-button:hover {
@@ -117,6 +125,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'Work Sans', Arial, sans-serif;
 }
 
 .ps-modal-content {
@@ -235,6 +244,7 @@
   text-align: center;
   margin-top: 10px;
 }
-.ps-warning-text{
+
+.ps-warning-text {
   color: red;
 }

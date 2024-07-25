@@ -13,8 +13,8 @@ function PlanSelection() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const plans = [
-    { name: 'Basic Plan', description: 'Access to gym facilities', duration: '1 Month', price: '$20' },
-    { name: 'Standard Plan', description: 'Access to gym + classes', duration: '3 Months', price: '$50' },
+    { name: 'Basic Plan', description: 'Basic gym access', price: 500, duration: '1 month' },
+    { name: 'Premium Plan', description: 'All access + personal trainer', price: 1000, duration: '1 month' },
     // Add more plans as needed
   ];
 
@@ -57,7 +57,7 @@ function PlanSelection() {
   return (
     <div className="ps-plan-selection">
       <div className="ps-plan-wrapper">
-        <h1>Available Membership Plans</h1>
+        <h1>Available Plans</h1>
         <div className="ps-plans-container">
           <div className="ps-plan-row">
             <span className="ps-plan-label">Plan</span>
@@ -74,7 +74,7 @@ function PlanSelection() {
               <div className="ps-plan-column">{plan.name}</div>
               <div className="ps-plan-column ps-plan-description">{plan.description}</div>
               <div className="ps-plan-column">{plan.duration}</div>
-              <div className="ps-plan-column">{plan.price}</div>
+              <div className="ps-plan-column">₱{plan.price}</div>
               {selectedPlan === index && (
                 <CheckCircleOutline className="ps-check-icon" />
               )}
@@ -102,8 +102,8 @@ function PlanSelection() {
             ) : (
               <>
                 <div className="ps-input-container">
-                  <label>GCash Number</label>
-                  <label>Date</label>
+                  <label><strong>GCash Number</strong></label>
+                  <label><strong>Date</strong></label>
                 </div>
                 <div className="ps-line" /> {/* Line below input fields */}
                 <div className="ps-input-container">
@@ -123,13 +123,14 @@ function PlanSelection() {
                 <div className="ps-plan-details">
                   <p><strong>You are about to purchase</strong></p>
                   <div className="ps-line" /> {/* Line below "You are about to purchase" */}
-                  <p>Plan: {plans[selectedPlan].name}</p>
+                  <p>{plans[selectedPlan].name}</p>
                   <p>{plans[selectedPlan].description}</p>
                   <p>{plans[selectedPlan].duration}</p>
+                  <p>₱{plans[selectedPlan].price}</p>
                 </div>
                 <div className="ps-line" /> {/* Line below plan details */}
                 {errorMessage && <p className="ps-error-text">{errorMessage}</p>}
-                <button className="ps-pay-button" onClick={handlePay}>Pay {plans[selectedPlan].price}</button>
+                <button className="ps-pay-button" onClick={handlePay}>Pay ₱{plans[selectedPlan].price}</button>
               </>
             )}
           </div>

@@ -133,7 +133,7 @@ const Login = () => {
         </div>
         <div className="form-container log-in">
           <form>
-            <h1>SIGN IN</h1>
+            <h1>LOG IN</h1>
             <div className="social-icons">
               <a href="#" className="icon"><i className="fab fa-google"></i></a>
               <a href="#" className="icon"><i className="fab fa-facebook-f"></i></a>
@@ -141,7 +141,7 @@ const Login = () => {
             <span>-OR USE ONE OF YOUR EXISTING ACCOUNTS-</span>
             <input type="email" name="email" placeholder="Enter email" onChange={handleChange} />
             <input type="password" name="password" placeholder="Enter Password" onChange={handleChange} />
-            <button type="button" onClick={handleLogin}>SIGN IN</button>
+            <button type="button" onClick={handleLogin}>SUBMIT</button>
             <a href="#">Forgot Your Password?</a>
           </form>
         </div>
