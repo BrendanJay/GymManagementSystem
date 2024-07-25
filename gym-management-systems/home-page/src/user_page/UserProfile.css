@@ -1,5 +1,7 @@
 /* UserProfile.css */
-.userProfileContainer {
+
+/* Container for the user profile */
+.userProfile__container {
   position: relative;
   width: 80%;
   max-width: 1200px;
@@ -11,18 +13,21 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.userProfile {
+/* Main user profile section */
+.userProfile__profile {
   display: flex;
   flex-direction: column;
 }
 
-.profileHeader {
+/* Header section of the profile */
+.userProfile__header {
   display: flex;
   flex-direction: column;
   align-items: left;
 }
 
-.profileAvatar {
+/* Avatar of the user */
+.userProfile__avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -30,12 +35,14 @@
   margin-bottom: 0px;
 }
 
-.profileName {
+/* Name section of the user */
+.userProfile__name {
   text-align: left;
-  margin-top: 0px; 
+  margin-top: 0px;
 }
 
-.avatarPlaceholder {
+/* Placeholder for the avatar */
+.userProfile__avatarPlaceholder {
   width: 100%;
   height: 100%;
   background-color: #ccc;
@@ -46,12 +53,14 @@
   color: #fff;
 }
 
-.profileNameText {
+/* Text of the user's name */
+.userProfile__nameText {
   font-size: 24px;
   font-weight: bold;
 }
 
-.history-container {
+/* Container for history sections */
+.userProfile__historyContainer {
   position: absolute;
   bottom: 20px;
   left: 20px;
@@ -60,7 +69,8 @@
   justify-content: space-between;
 }
 
-.membership-history, .trainer-history {
+/* Styles for membership history section */
+.userProfile__membershipHistory, .userProfile__trainerHistory {
   width: 45%;
   height: 300px;
   background-color: #055152;
@@ -71,12 +81,14 @@
   font-family: 'Poetsen One', sans-serif;
 }
 
-.membershipHistory h3, .trainerHistory h3 {
+/* Title of history sections */
+.userProfile__membershipHistory h3, .userProfile__trainerHistory h3 {
   margin-top: 0;
   margin-bottom: 50px;
 }
 
-.inputFieldsContainer {
+/* Container for input fields */
+.userProfile__inputFieldsContainer {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -86,7 +98,8 @@
   width: 30%;
 }
 
-.inputField {
+/* Styles for input fields */
+.userProfile__inputField {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 25px;
@@ -94,7 +107,8 @@
   font-family: 'Poetsen One', sans-serif;
 }
 
-.editButton {
+/* Button for editing profile */
+.userProfile__editButton {
   position: absolute;
   top: 10px;
   right: 20px;
@@ -108,31 +122,36 @@
   font-family: 'Poetsen One', sans-serif;
 }
 
-.editButton:hover {
+/* Hover state for edit button */
+.userProfile__editButton:hover {
   background-color: #45a049;
 }
 
-.membership-history table, .trainer-history table {
+/* Table styles within history sections */
+.userProfile__membershipHistory table, .userProfile__trainerHistory table {
   width: 100%;
   border-collapse: collapse;
   font-family: 'Poetsen One', sans-serif;
 }
 
-.membership-history th, .trainer-history th,
-.membership-history td, .trainer-history td {
+/* Table headers and cells */
+.userProfile__membershipHistory th, .userProfile__trainerHistory th,
+.userProfile__membershipHistory td, .userProfile__trainerHistory td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
 
-.membership-history th, .trainer-history th {
+/* Header styles in tables */
+.userProfile__membershipHistory th, .userProfile__trainerHistory th {
   background-color: #ffffff;
   font-weight: bold;
-  border-bottom: 2px solid #000000; /* This adds a bold line under the headers */
-  border-top: 2px solid #000000; /* This adds a bold line above the headers */
+  border-bottom: 2px solid #000000; /* Bold line below headers */
+  border-top: 2px solid #000000; /* Bold line above headers */
 }
 
-.modalOverlay {
+/* Modal overlay styles */
+.userProfile__modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -146,14 +165,16 @@
   font-family: 'Poetsen One', sans-serif;
 }
 
-.modalContent {
+/* Modal content styles */
+.userProfile__modalContent {
   background-color: rgb(158, 173, 176);
   padding: 20px;
   border-radius: 8px;
   width: 400px;
 }
 
-.modalContent input {
+/* Input fields inside the modal */
+.userProfile__modalContent input {
   display: block;
   width: 80%;
   margin: 10px auto;
@@ -163,7 +184,8 @@
   font-family: 'Poetsen One', sans-serif;
 }
 
-.modalContent button {
+/* Buttons inside the modal */
+.userProfile__modalContent button {
   padding: 12px 24px;
   border-radius: 25px;
   border: none;
@@ -171,27 +193,32 @@
   font-size: 16px;
   font-weight: bold;
   font-family: 'Poetsen One', sans-serif;
-  gap: 40px; 
+  gap: 40px;
 }
-.modalHeader {
+
+/* Modal header styles */
+.userProfile__modalHeader {
   text-align: center;
   margin-top: 0;
   padding-bottom: 10px;
   border-bottom: 1px solid #ccc;
 }
 
-.modalContent {
+/* Relative position for modal content */
+.userProfile__modalContent {
   position: relative;
   padding-bottom: 60px;
 }
 
-.saveButton {
+/* Save button in the modal */
+.userProfile__saveButton {
   position: absolute;
   bottom: 15px;
   left: 15px;
 }
 
-.closeButton {
+/* Close button in the modal */
+.userProfile__closeButton {
   position: absolute;
   bottom: 15px;
   right: 15px;
