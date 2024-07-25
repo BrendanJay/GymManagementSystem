@@ -272,11 +272,28 @@ const Members = () => {
     }
   };
   
+  const [editMemberModal, setEditMemberModal] = useState(false);
+
   const handleEdit = (member) => {
-    setNewMember(member);
-    setAddMemberModal(true);
+    setNewMember({
+      id: member.id,
+      username: member.username,
+      fullName: member.fullName,
+      gender: member.gender,
+      age: member.age,
+      email: member.email,
+      contactNumber: member.contactNumber,
+      address: member.address
+    });
+    setEditMemberModal(true);
   };
 
+  const handleSaveEditMember = async () => {
+    const membersRef = collection(db, 'members');
+    await setDoc(doc(membersRef, newMember.id.toString()), newMember, { merge: true });
+    setMembersData(membersData.map(member => member.id === newMember.id ? newMember : member));
+    setEditMemberModal(false);
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewMember((prevMember) => ({
@@ -548,7 +565,7 @@ const Members = () => {
         <div className="modal-overlay">
           <div className="modal">
             <div className="modal-header">
-              <h2>Edit Member</h2>
+              <h2>Add Member</h2>
               <button className="close-button" onClick={handleCloseAddMemberModal}>
                 <CloseIcon />
               </button>
@@ -714,6 +731,106 @@ const Members = () => {
           </div>
         </div>
       )}
+      {editMemberModal && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <div className="modal-header">
+        <h2>Edit Member</h2>
+        <button className="close-button" onClick={() => setEditMemberModal(false)}>
+          <CloseIcon />
+        </button>
+      </div>
+      <div className="modal-content">
+        <div className="modal-field-row">
+          <div className="modal-field">
+            <label>Username:</label>
+            <input
+              type="text"
+              name="username"
+              value={newMember.username}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="modal-field">
+            <label>Full Name:</label>
+            <input
+              type="text"
+              name="fullName"
+              value={newMember.fullName}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+        <div className="modal-field-row">
+          <div className="modal-field">
+            <label>Gender:</label>
+            <select
+              name="gender"
+              value={newMember.gender}
+              onChange={handleInputChange}
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div className="modal-field">
+            <label>Age:</label>
+            <input
+              type="number"
+              name="age"
+              value={newMember.age}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+        <div className="modal-field-row">
+          <div className="modal-field">
+            <label>Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={newMember.email}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="modal-field">
+            <label>Contact Number:</label>
+            <input
+              type="text"
+              name="contactNumber"
+              value={newMember.contactNumber}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+        <div className="modal-field-row">
+          <div className="modal-field">
+            <label>Address:</label>
+            <input
+              type="text"
+              name="address"
+              value={newMember.address}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="modal-footer">
+        <div className="modal-footer-buttons">
+          <button className="save-button" onClick={handleSaveEditMember}>
+            SAVE
+          </button>
+          <button className="cancel-button" onClick={() => setEditMemberModal(false)}>
+            CANCEL
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>    
   );
 };
