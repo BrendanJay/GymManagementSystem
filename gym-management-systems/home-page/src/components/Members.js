@@ -548,7 +548,7 @@ const Members = () => {
         <div className="modal-overlay">
           <div className="modal">
             <div className="modal-header">
-              <h2>Add New Member</h2>
+              <h2>Edit Member</h2>
               <button className="close-button" onClick={handleCloseAddMemberModal}>
                 <CloseIcon />
               </button>
