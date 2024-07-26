@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircleOutline } from '@mui/icons-material';
 import './TrainerSelection.css';
 import gcashLogo from './GCash-Logo-tumb.png';
+import { collection, query, where, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
+import { auth, db } from '../firebaseConfig';
 
 function TrainerSelection() {
+  const [trainers, setTrainers] = useState([]);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -13,11 +16,17 @@ function TrainerSelection() {
   const [sessions, setSessions] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const trainers = [
-    { name: 'John Doe', specialty: 'Strength Training', rate: 700 },
-    { name: 'Jane Smith', specialty: 'Cardio Training', rate: 600 },
-    // Add more trainers as needed
-  ];
+
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      const trainersRef = collection(db, 'trainers');
+      const snapshot = await getDocs(trainersRef);
+      const trainersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setTrainers(trainersData);
+    };
+  
+    fetchTrainers();
+  }, []);
 
   const handleSelect = (index) => {
     setSelectedTrainer(index);
@@ -39,16 +48,38 @@ function TrainerSelection() {
     return regex.test(number);
   };
 
-  const handlePay = () => {
+  const handlePay = async () => {
     if (!gcashNumber || !date || !sessions) {
       setErrorMessage('Please fill in all fields.');
     } else if (!validateGcashNumber(gcashNumber)) {
       setErrorMessage('Please enter a valid GCash number (+63 followed by 10 digits).');
     } else {
-      setPaymentSuccessful(true);
-      setErrorMessage(''); // Clear any previous error messages
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const q = query(collection(db, 'members'), where('email', '==', user.email));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0];
+            await updateDoc(userDoc.ref, {
+              trainerHistory: arrayUnion({
+                trainerName: trainers[selectedTrainer].fullName,
+                sessions: parseInt(sessions),
+                status: 'Active',
+                startDate: date
+              })
+            });
+            setPaymentSuccessful(true);
+            setErrorMessage('');
+          }
+        }
+      } catch (error) {
+        console.error("Error updating user's trainer history:", error);
+        setErrorMessage('An error occurred while processing your payment. Please try again.');
+      }
     }
   };
+  
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -56,9 +87,9 @@ function TrainerSelection() {
   };
 
   const calculateTotal = () => {
-    return selectedTrainer !== null && sessions ? trainers[selectedTrainer].rate * sessions : 0;
+    return selectedTrainer !== null && sessions ? trainers[selectedTrainer].ratePerSession * parseInt(sessions) : 0;
   };
-
+ 
   return (
     <div className="ts-trainer-selection">
       <div className="ts-trainer-wrapper">
@@ -71,13 +102,13 @@ function TrainerSelection() {
           </div>
           {trainers.map((trainer, index) => (
             <div
-              key={index}
+              key={trainer.id}
               className={`ts-trainer-card ${selectedTrainer === index ? 'ts-selected' : ''}`}
               onClick={() => handleSelect(index)}
             >
-              <div className="ts-trainer-column">{trainer.name}</div>
+              <div className="ts-trainer-column">{trainer.fullName}</div>
               <div className="ts-trainer-column ts-trainer-specialty">{trainer.specialty}</div>
-              <div className="ts-trainer-column">₱{trainer.rate} per session</div>
+              <div className="ts-trainer-column">₱{trainer.ratePerSession} per session</div>
               {selectedTrainer === index && (
                 <CheckCircleOutline className="ts-check-icon" />
               )}
@@ -132,15 +163,17 @@ function TrainerSelection() {
                 <div className="ts-line" /> {/* Line below input fields */}
                 <div className="ts-trainer-details">
                   <p><strong>You are about to purchase</strong></p>
-                  <div className="ts-line" /> {/* Line below "You are about to purchase" */}
-                  <p>Trainer: {trainers[selectedTrainer].name}</p>
-                  <p>{trainers[selectedTrainer].specialty}</p>
-                  <p>₱{trainers[selectedTrainer].rate} per session</p>
+                  <div className="ts-line" />
+                  <p>Trainer: {trainers[selectedTrainer]?.fullName}</p>
+                  <p>{trainers[selectedTrainer]?.specialty}</p>
+                  <p>₱{trainers[selectedTrainer]?.ratePerSession} per session</p>
+                  <p>Number of sessions: {sessions}</p>
+                  <p><strong>Total: ₱{calculateTotal()}</strong></p>
                 </div>
                 <div className="ts-line" /> {/* Line below trainer details */}
                 {errorMessage && <p className="ts-error-text">{errorMessage}</p>}
                 <button className="ts-pay-button" onClick={handlePay}>Pay ₱{calculateTotal()}</button>
-              </>
+                </>
             )}
           </div>
         </div>

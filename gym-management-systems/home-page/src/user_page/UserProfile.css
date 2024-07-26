@@ -1,40 +1,56 @@
-/* UserProfile.css */
-.userProfileContainer {
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Container for the user profile */
+.userProfile__container {
   position: relative;
+  width: 80%;
   max-width: 1200px;
-  height: 600px; /* Increased height */
+  height: 750px;
   margin: 20px auto;
   padding: 20px;
-  background-color: #034681;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.userProfile {
+/* Main user profile section */
+.userProfile__profile {
   display: flex;
   flex-direction: column;
 }
 
-.profileHeader {
+/* Header section of the profile */
+.userProfile__header {
   display: flex;
   flex-direction: column;
   align-items: left;
 }
 
-.profileAvatar {
-  width: 100px;
-  height: 100px;
+/* Avatar of the user */
+.userProfile__avatar {
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 0px;
+  margin-top: 15px;
+  margin-left: 90px; /* Adjust this value to move it right */
+  margin-right: auto; /* Pushes it towards the start */
 }
 
-.profileName {
+
+/* Name section of the user */
+.userProfile__name {
   text-align: left;
-  margin-top: 0px; 
+  margin-top: 0px;
+  margin-left: 150px; /* Adjust this value to move it right */
+  margin-right: auto; /* Pushes it towards the start */
 }
 
-.avatarPlaceholder {
+/* Placeholder for the avatar */
+.userProfile__avatarPlaceholder {
   width: 100%;
   height: 100%;
   background-color: #ccc;
@@ -45,65 +61,204 @@
   color: #fff;
 }
 
-.profileNameText {
+/* Text of the user's name */
+.userProfile__nameText {
   font-size: 24px;
   font-weight: bold;
 }
 
-.historyContainer {
+/* Container for history sections */
+.userProfile__historyContainer {
   position: absolute;
   bottom: 20px;
   left: 20px;
   right: 20px;
   display: flex;
   justify-content: space-between;
-  font-family: 'Poetsen One', sans-serif;
 }
 
-.membershipHistory, .trainerHistory {
-  width: 46%;
-  height: 200px;
-  background-color: #fff;
+.userProfile__membershipHistory, .userProfile__trainerHistory {
+  width: 45%;
+  height: 400px;
+  background-color: rgb(228, 228, 228);
+  border: 3px solid rgb(26, 19, 99);
   border-radius: 8px;
   padding: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   overflow-y: auto;
+  font-family: 'Oswald', sans-serif;
+  position: relative;
 }
 
-.membershipHistory h3, .trainerHistory h3 {
-  margin-top: 0;
-  margin-bottom: 50px;
+
+/* Title of history sections */
+.userProfile__membershipHistory h3, .userProfile__trainerHistory h3 {
+  margin-top: 0; /* Remove top margin to adjust position */
+  margin-bottom: 15px; /* Adjust bottom margin as needed */
+}
+/* Table wrapper to add scrolling */
+.userProfile__tableWrapper {
+  max-height: 340px; /* Adjust height for scrollable area */
+  overflow-y: auto;
+  margin-top: 10px; /* Add margin-top to adjust the spacing above the table */
 }
 
-.inputFieldsContainer {
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
+/* Container for input fields */
+.userProfile__inputFieldsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 30px; /* Space between columns */
+  position: absolute;
+  top: 80px;
+  right: 40px;
+  width: 60%; /* Adjust width as needed */
 }
 
-.inputField {
+/* Styles for input fields */
+.userProfile__inputField {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 25px;
   font-size: 14px;
-  font-family: 'Poetsen One', sans-serif;
+  font-family: 'Work Sans', sans-serif;
+  width: 100%; /* Full width of the grid column */
 }
 
-.editButton {
+
+/* Button for editing profile */
+.userProfile__editButton {
   position: absolute;
-  top: 10px;
+  top: 20px;
   right: 20px;
   padding: 8px 16px;
   background-color: #4CAF50;
+  width: 100px;
   color: white;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  font-family: 'Poetsen One', sans-serif;
+  font-family: 'Work Sans', sans-serif;
 }
 
-.editButton:hover {
+/* Hover state for edit button */
+.userProfile__editButton:hover {
   background-color: #45a049;
+}
+
+/* Table styles within history sections */
+.userProfile__membershipHistory table, .userProfile__trainerHistory table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Oswald', sans-serif;
+}
+
+/* Table headers and cells */
+.userProfile__membershipHistory th, .userProfile__trainerHistory th,
+.userProfile__membershipHistory td, .userProfile__trainerHistory td {
+  border: 1px solid #000000;
+  padding: 8px;
+  text-align: left;
+  color: #000000; /* Text color for cells */
+}
+
+/* Header styles in tables */
+.userProfile__membershipHistory th, .userProfile__trainerHistory th {
+  background-color: #ffffff;
+  font-weight: bold;
+  border-bottom: 3px solid #000000; /* Bold line below headers */
+  border-top: 1px solid #000000; /* Bold line above headers */
+}
+
+
+/* Modal overlay styles */
+.userProfile__modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  font-family: 'Work Sans', sans-serif;
+}
+/* Row styles */
+.userProfile__membershipHistory tr:nth-child(even), 
+.userProfile__trainerHistory tr:nth-child(even) {
+  background-color: #ffffff; /* Background color for even rows */
+}
+
+.userProfile__membershipHistory tr:nth-child(odd), 
+.userProfile__trainerHistory tr:nth-child(odd) {
+  background-color: #ffffff; /* Background color for odd rows */
+}
+
+/* Cell hover effect */
+.userProfile__membershipHistory td:hover, 
+.userProfile__trainerHistory td:hover {
+  background-color: #e0e0e0; /* Background color when hovering over a cell */
+  color: #000; /* Text color when hovering over a cell */
+}
+/* Modal content styles */
+.userProfile__modalContent {
+  background-color: rgb(255, 255, 255);
+  border: 3px solid rgb(26, 19, 99);
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+}
+
+/* Input fields inside the modal */
+.userProfile__modalContent input {
+  background-color: rgb(255, 255, 255);
+  display: block;
+  width: 80%;
+  margin: 10px auto;
+  padding: 8px;
+  border: 1px solid #8b8b8b;
+  border-radius: 20px;
+  font-family: 'Work Sans', sans-serif;
+}
+
+/* Buttons inside the modal */
+.userProfile__modalContent button {
+  background-color: rgb(219, 219, 219);
+  padding: 8px 24px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Work Sans', sans-serif;
+  gap: 40px;
+}
+
+/* Modal header styles */
+.userProfile__modalHeader {
+  text-align: center;
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgb(26, 19, 99);
+  font-family: 'Oswald', sans-serif;
+}
+
+/* Relative position for modal content */
+.userProfile__modalContent {
+  position: relative;
+  padding-bottom: 60px;
+}
+
+/* Save button in the modal */
+.userProfile__saveButton {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+}
+
+/* Close button in the modal */
+.userProfile__closeButton {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
 }

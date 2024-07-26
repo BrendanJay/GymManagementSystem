@@ -11,9 +11,10 @@ const Login = () => {
     lastName: '',
     firstName: '',
     age: '',
-    gender: '',
+    gender: '', // Default value
     birthdate: '',
     contactNumber: '',
+    address: '', // Added address field
     email: '',
     password: '',
     confirmPassword: '',
@@ -21,7 +22,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleRegister = async () => {
@@ -29,15 +31,14 @@ const Login = () => {
       alert("Passwords do not match!");
       return;
     }
-  
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-      //const user = userCredential.user;
       const membersRef = collection(db, 'members');
       const snapshot = await getDocs(membersRef);
       const ids = snapshot.docs.map(doc => parseInt(doc.id));
       const nextId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
-  
+
       // Add user to users collection
       await setDoc(doc(db, "users", nextId.toString()), {
         id: nextId,
@@ -47,10 +48,11 @@ const Login = () => {
         gender: formData.gender,
         birthdate: formData.birthdate,
         contactNumber: formData.contactNumber,
+        address: formData.address, // Added address field
         email: formData.email,
         password: formData.password,
       });
-  
+
       // Add user to members collection with additional fields
       await setDoc(doc(db, "members", nextId.toString()), {
         id: nextId,
@@ -62,8 +64,8 @@ const Login = () => {
         gender: formData.gender,
         birthdate: formData.birthdate,
         contactNumber: formData.contactNumber,
+        address: formData.address, // Added address field
         email: formData.email,
-        address: "", // Empty field to be filled later
         membershipPlan: "", // Empty field to be filled later
         duration: "", // Empty field to be filled later
         startDate: "", // Empty field to be filled later
@@ -74,15 +76,13 @@ const Login = () => {
         trainerHistory: [], // Empty array to be filled later
         registrationDate: new Date().toISOString(),
       });
-  
+
       alert("Account created successfully!");
     } catch (error) {
       console.error("Error creating user: ", error);
       alert(error.message);
     }
   };
-  
-  
 
   const handleLogin = async () => {
     try {
@@ -99,7 +99,6 @@ const Login = () => {
       alert(error.message);
     }
   };
-  
 
   return (
     <div className="login-page">
@@ -117,20 +116,26 @@ const Login = () => {
           <div className="nav-button"></div>
         </nav>
         <div className="form-container sign-up">
-          <form>
-            <h1>HELLO THERE!</h1>
-            <input type="text" name="lastName" placeholder="Last Name" onChange={handleChange} />
-            <input type="text" name="firstName" placeholder="First Name" onChange={handleChange} />
-            <input type="number" name="age" placeholder="Age" onChange={handleChange} />
-            <input type="text" name="gender" placeholder="Gender" onChange={handleChange} />
-            <input type="date" name="birthdate" placeholder="Birthdate" onChange={handleChange} />
-            <input type="tel" name="contactNumber" placeholder="Contact Number" onChange={handleChange} />
-            <input type="email" name="email" placeholder="Enter email" onChange={handleChange} />
-            <input type="text" name="password" placeholder="Enter Password" onChange={handleChange} />
-            <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
-            <button type="button" className="submit" onClick={handleRegister}>CREATE ACCOUNT</button>
-          </form>
-        </div>
+            <form>
+              <input type="text" name="lastName" placeholder="Last Name" onChange={handleChange} />
+              <input type="text" name="firstName" placeholder="First Name" onChange={handleChange} />
+              <input type="number" name="age" placeholder="Age" onChange={handleChange} />
+              <select name="gender" value={formData.gender} onChange={handleChange}>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <input type="date" name="birthdate" placeholder="Birthdate" onChange={handleChange} />
+              <input type="tel" name="contactNumber" placeholder="Contact Number" onChange={handleChange} />
+              <input type="text" name="address" placeholder="Address" onChange={handleChange} />
+              <input type="email" name="email" placeholder="Enter email" onChange={handleChange} />
+              <input type="password" name="password" placeholder="Enter Password" onChange={handleChange} />
+              <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
+              <button type="button" className="submit" onClick={handleRegister}>CREATE ACCOUNT</button>
+            </form>
+          </div>
+
         <div className="form-container log-in">
           <form>
             <h1>LOG IN</h1>
@@ -149,7 +154,6 @@ const Login = () => {
           <div className="toggle">
             <div className="toggle-panel toggle-left">
               <h1>I THINK WE'RE ALL SET!</h1>
-              <p>LFG</p>
               <button type="button" className="hidden" id="login" onClick={() => setActive(false)}>SIGN IN</button>
             </div>
             <div className="toggle-panel toggle-right">
