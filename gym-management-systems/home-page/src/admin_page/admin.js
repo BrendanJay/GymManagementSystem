@@ -1,6 +1,5 @@
-// D:\GMS_Github\GymManagementSystem\gym-management-systems\home-page\src\admin_page\Admin.js
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Dashboard from '../components/Dashboard';
 import Members from '../components/Members';
@@ -10,6 +9,7 @@ import Equipments from '../components/Equipments';
 import Products from '../components/Products'; 
 import Sales from '../components/Sales';
 import './admin.css';
+import { getAuth, signOut } from "firebase/auth";
 
 const Header = () => {
   const location = useLocation();
@@ -45,9 +45,22 @@ const Header = () => {
 };
 
 function Admin() {
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error("Error logging out:", error);
+      });
+  };
+
   return (
     <div className="App">
-      <Sidebar />
+      <Sidebar handleLogout={handleLogout} />
       <Header />
       <div className="main-content">
         <Routes>

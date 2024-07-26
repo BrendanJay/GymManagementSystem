@@ -1,4 +1,3 @@
-// D:\GMS_Github\GymManagementSystem\gym-management-systems\home-page\src\components\SidebarData.js
 import React from 'react';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import GroupIcon from '@mui/icons-material/Group';
@@ -7,6 +6,7 @@ import SportsIcon from '@mui/icons-material/Sports';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 const SidebarData = [
   {
@@ -43,6 +43,11 @@ const SidebarData = [
     title: "Sales",
     icon: <PointOfSaleIcon />,
     link: "/admin/sales"
+  },
+  {
+    title: "Logout",
+    icon: <ExitToAppIcon />,
+    link: "/logout"
   }
 ];
 

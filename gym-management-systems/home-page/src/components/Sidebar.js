@@ -1,9 +1,21 @@
 import React from 'react';
-import SidebarData from './SidebarData'; // Update this to use default import;
+import SidebarData from './SidebarData';
 import { useNavigate } from 'react-router-dom';
+import { getAuth, signOut } from "firebase/auth";
 
 function Sidebar() {
     const navigate = useNavigate();
+    const auth = getAuth();
+
+    const handleLogout = () => {
+        signOut(auth)
+            .then(() => {
+                navigate('/');
+            })
+            .catch((error) => {
+                console.error("Error logging out:", error);
+            });
+    };
 
     return (
         <div className="Sidebar">
@@ -14,7 +26,7 @@ function Sidebar() {
                             key={key}
                             className="row"
                             id={window.location.pathname === val.link ? "active" : ""}
-                            onClick={() => navigate(val.link)}
+                            onClick={val.title === "Logout" ? handleLogout : () => navigate(val.link)}
                         >
                             <div id="icon">{val.icon}</div>
                             <div id="title">{val.title}</div>
