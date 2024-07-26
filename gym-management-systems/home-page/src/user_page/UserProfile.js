@@ -74,14 +74,14 @@ function UserProfile() {
       <button className="userProfile__editButton" onClick={toggleModal}>Edit</button>
       <div className="userProfile__profile">
         <div className="userProfile__header">
-        <div className="userProfile__avatar">
-          <div className="userProfile__avatarPlaceholder">
-            <span>{userData?.fullName?.charAt(0) || 'U'}</span>
+          <div className="userProfile__avatar">
+            <div className="userProfile__avatarPlaceholder">
+              <span>{userData?.fullName?.charAt(0) || 'U'}</span>
+            </div>
           </div>
-        </div>
-        <div className="userProfile__name">
-          <h2 className="userProfile__nameText">{userData?.fullName || 'User'}</h2>
-        </div>
+          <div className="userProfile__name">
+            <h2 className="userProfile__nameText">{userData?.fullName || 'User'}</h2>
+          </div>
         </div>
       </div>
       {userData && (
@@ -95,6 +95,7 @@ function UserProfile() {
           <input type="text" value={userData.address || ''} className="userProfile__inputField" readOnly />
         </div>
       )}
+      <div className="userProfile__historyContainer">
         {userData && userData.membershipPlansHistory && (
           <div className="userProfile__membershipHistory">
             <h3>Membership Plan History</h3>
@@ -120,7 +121,6 @@ function UserProfile() {
             </table>
           </div>
         )}
-
         {userData && userData.trainerHistory && (
           <div className="userProfile__trainerHistory">
             <h3>Trainer History</h3>
@@ -144,6 +144,7 @@ function UserProfile() {
             </table>
           </div>
         )}
+      </div>
       <Modal isOpen={isModalOpen} onClose={toggleModal}>
         <h2 className="userProfile__modalHeader">Edit Personal Information</h2>
         <input
@@ -188,7 +189,7 @@ function UserProfile() {
           onChange={handleInputChange}
           className="userProfile__inputField"
         />
-          <input
+        <input
           type="password"
           name="password"
           value={editData.password || ''}
@@ -199,7 +200,8 @@ function UserProfile() {
         <input
           type="password"
           name="confirmPassword"
-          value={ ''|| ''}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           placeholder="Confirm password"
           className="userProfile__inputField"
         />
@@ -207,6 +209,7 @@ function UserProfile() {
       </Modal>
     </div>
   );
+  
 }
 
 export default UserProfile;
